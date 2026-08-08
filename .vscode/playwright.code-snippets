@@ -1,0 +1,190 @@
+{
+  "Playwright import": {
+    "scope": "javascript,typescript",
+    "prefix": "pw-import",
+    "body": ["import { test, expect } from \"@playwright/test\";"],
+    "description": "Import test and expect from @playwright/test",
+  },
+
+  "Playwright describe block": {
+    "scope": "javascript,typescript",
+    "prefix": "pw-test-describe",
+    "body": [
+      "test.describe(\"${1:describe block name}\", () => {",
+      "  $0",
+      "});",
+    ],
+    "description": "Playwright test.describe block",
+  },
+
+  "Playwright test": {
+    "scope": "javascript,typescript",
+    "prefix": "pw-test",
+    "body": [
+      "test(\"${1:test name}\", async ({ page }) => {",
+      "  // Arrange",
+      "  await page.goto(\"${2:/}\");",
+      "",
+      "  // Act",
+      "  $0",
+      "",
+      "  // Assert",
+      "});",
+    ],
+    "description": "Playwright test block",
+  },
+
+  "Playwright test.only": {
+    "scope": "javascript,typescript",
+    "prefix": "pw-test-only",
+    "body": [
+      "test.only(\"${1:test name}\", async ({ page }) => {",
+      "  // Arrange",
+      "  await page.goto(\"${2:/}\");",
+      "",
+      "  // Act",
+      "  $0",
+      "",
+      "  // Assert",
+      "});",
+    ],
+    "description": "Playwright test.only block",
+  },
+
+  "Playwright test.skip": {
+    "scope": "javascript,typescript",
+    "prefix": "pw-test-skip",
+    "body": [
+      "test.skip(\"${1:test name}\", async ({ page }) => {",
+      "  $0",
+      "});",
+    ],
+    "description": "Playwright test.skip block",
+  },
+
+  "Playwright beforeEach": {
+    "scope": "javascript,typescript",
+    "prefix": "pw-before-each",
+    "body": [
+      "test.beforeEach(async ({ page }) => {",
+      "  await page.goto(\"${1:/}\");",
+      "  $0",
+      "});",
+    ],
+    "description": "Playwright test.beforeEach hook",
+  },
+
+  "Playwright afterEach": {
+    "scope": "javascript,typescript",
+    "prefix": "pw-after-each",
+    "body": ["test.afterEach(async ({ page }) => {", "  $0", "});"],
+    "description": "Playwright test.afterEach hook",
+  },
+
+  "Playwright locator action": {
+    "scope": "javascript,typescript",
+    "prefix": "pw-locator",
+    "body": ["await page.locator(\"${1:selector}\").${2:click()};"],
+    "description": "await page.locator(\"...\").action()",
+  },
+
+  "Playwright getByRole": {
+    "scope": "javascript,typescript",
+    "prefix": "pw-gb-role",
+    "body": [
+      "await page.getByRole(\"${1:role}\", { name: \"${2:accessible name}\" })${3};",
+    ],
+    "description": "await page.getByRole(\"...\", { name: \"...\" }).action()",
+  },
+
+  "Playwright getByLabel": {
+    "scope": "javascript,typescript",
+    "prefix": "pw-gb-label",
+    "body": [
+      "await page.getByLabel(\"${1:label}\", { exact: ${2:true} })${3};",
+    ],
+    "description": "await page.getByLabel(\"...\", { exact: true }).action()",
+  },
+
+  "Playwright getByPlaceholder": {
+    "scope": "javascript,typescript",
+    "prefix": "pw-gb-placeholder",
+    "body": [
+      "await page.getByPlaceholder(\"${1:placeholder}\", { exact: ${2:true} })${3};",
+    ],
+    "description": "await page.getByPlaceholder(\"...\", { exact: true }).action()",
+  },
+
+  "Playwright getByTestId": {
+    "scope": "javascript,typescript",
+    "prefix": "pw-gb-testid",
+    "body": ["await page.getByTestId(\"${1:testid}\")${2};"],
+    "description": "await page.getByTestId(\"...\").action()",
+  },
+
+  "Playwright getByText": {
+    "scope": "javascript,typescript",
+    "prefix": "pw-gb-text",
+    "body": ["await page.getByText(\"${1:text}\", { exact: ${2:true} })${3};"],
+    "description": "await page.getByText(\"...\", { exact: true }).action()",
+  },
+
+  "Playwright getByTitle": {
+    "scope": "javascript,typescript",
+    "prefix": "pw-gb-title",
+    "body": [
+      "await page.getByTitle(\"${1:title}\", { exact: ${2:true} })${3};",
+    ],
+    "description": "await page.getByTitle(\"...\", { exact: true }).action()",
+  },
+
+  "Playwright getByAltText": {
+    "scope": "javascript,typescript",
+    "prefix": "pw-gb-alttext",
+    "body": [
+      "await page.getByAltText(\"${1:alt text}\", { exact: ${2:true} })${3};",
+    ],
+    "description": "await page.getByAltText(\"...\", { exact: true }).action()",
+  },
+
+  "Playwright waitForTimeout": {
+    "scope": "javascript,typescript",
+    "prefix": "pw-wf-time",
+    "body": ["await page.waitForTimeout(${1:1500});"],
+    "description": "await page.waitForTimeout(ms)",
+  },
+
+  "Playwright expect": {
+    "scope": "javascript,typescript",
+    "prefix": "pw-expect",
+    "body": ["await expect(page.${1:locator}).${2:toBeVisible()};"],
+    "description": "await expect(page....).matcher()",
+  },
+
+  "Full spec file skeleton": {
+    "scope": "javascript,typescript",
+    "prefix": "pw-spec",
+    "body": [
+      "import { test, expect } from \"@playwright/test\";",
+      "",
+      "test.describe(\"${1:describe block name}\", () => {",
+      "  test(\"${2:test name}\", async ({ page }) => {",
+      "    // Arrange",
+      "    await page.goto(\"${3:/}\");",
+      "",
+      "    // Act",
+      "    $0",
+      "",
+      "    // Assert",
+      "  });",
+      "});",
+    ],
+    "description": "Full Playwright spec file skeleton (import + describe + test)",
+  },
+  "console log": {
+    "scope": "javascript,typescript",
+    "prefix": "clg",
+    "body": ["console.log(${1})"],
+    "description": "console.log($1)",
+  },
+}
