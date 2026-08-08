@@ -89,7 +89,7 @@ test.describe("Inventory test", () => {
     await loginPage.goto("/");
     await loginPage.login(user);
 
-    await inventoryPage.addProductToCart(products.Backpack.name).click();
+    await inventoryPage.addProductToCart(products.Backpack.name);
 
     await expect(page).toHaveTitle("Swag Labs");
   });

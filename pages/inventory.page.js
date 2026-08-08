@@ -3,7 +3,6 @@ class InventoryPage {
   constructor(page) {
     this.page = page;
     this.title_loc = this.page.getByTestId("title");
-    this.productName_loc = this.page;
     this.inventoryItems_loc = this.page.locator(".inventory_item");
     this.productNames_loc = this.page.getByTestId("inventory-item-name");
     this.productPrices_loc = this.page.getByTestId("inventory-item-price");
@@ -19,14 +18,15 @@ class InventoryPage {
     return await this.productPrices_loc.allTextContents();
   }
 
-  async getAllProductsDescriptions() {
+  async getAllProductDescriptions() {
     return await this.productDescriptions_loc.allTextContents();
   }
 
-  addProductToCart(productName) {
-    return this.inventoryItems_loc
+  async addProductToCart(productName) {
+    await this.inventoryItems_loc
       .filter({ hasText: productName })
-      .locator("button");
+      .locator("button")
+      .click();
   }
 }
 
