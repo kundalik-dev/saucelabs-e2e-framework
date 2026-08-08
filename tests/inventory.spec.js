@@ -81,6 +81,7 @@ test.describe("Inventory test", () => {
 
   test("should add a product to the cart", async ({ page }) => {
     const user = users.valid.standard_user;
+    const products = inventoryData.productData.Backpack;
 
     loginPage = new LoginPage(page);
     inventoryPage = new InventoryPage(page);
@@ -88,7 +89,8 @@ test.describe("Inventory test", () => {
     await loginPage.goto("/");
     await loginPage.login(user);
 
-    await inventoryPage.addProductToCart("Sauce Labs Backpack");
+    await inventoryPage.addProductToCart(products.name).click();
+
     await expect(page).toHaveTitle("Swag Labs");
   });
 });

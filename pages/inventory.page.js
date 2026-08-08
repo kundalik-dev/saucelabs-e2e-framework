@@ -23,16 +23,10 @@ class InventoryPage {
     return await this.productDescriptions_loc.allTextContents();
   }
 
-  async addProductToCart(productName) {
-    console.log("product name :- ", productName);
-
-    const product = await this.inventoryItems_loc
+  addProductToCart(productName) {
+    return this.inventoryItems_loc
       .filter({ hasText: productName })
-      .first();
-
-    // await product.getByText("Add to cart").click();
-
-    await product.this.addToCart_loc.click();
+      .locator("button");
   }
 }
 
