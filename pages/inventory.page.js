@@ -14,6 +14,7 @@ class InventoryPage {
 
     // cart locator
     this.addToCart_loc = this.page.getByText("Add to cart");
+    this.cartBadge_loc = this.page.getByTestId("shopping-cart-badge");
 
     // sort locator
     this.sortDropdown_loc = this.page.getByTestId("product-sort-container");
@@ -27,6 +28,14 @@ class InventoryPage {
 
   getFirstProductName() {
     return this.productNames_loc.first();
+  }
+
+  getInventoryCount() {
+    return this.inventoryItems_loc;
+  }
+
+  cartProductCount() {
+    return this.cartBadge_loc;
   }
 
   async getAllProductPrices() {
@@ -43,6 +52,8 @@ class InventoryPage {
       .locator("button")
       .click();
   }
+
+  async removeProductFromCart() {}
 
   async selectSortOrder(sortOrder) {
     await this.sortDropdown_loc.selectOption({ value: sortOrder });

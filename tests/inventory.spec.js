@@ -30,22 +30,21 @@ test.describe("Inventory test", () => {
 
   test("should display all available products", async ({ page }) => {
     // Arrange
+    loginPage = new LoginPage(page);
+    inventoryPage = new InventoryPage(page);
     const user = users.valid.standard_user;
     const expectedProductNames = Object.values(inventoryData.productData).map(
       (product) => product.name
     );
-
-    loginPage = new LoginPage(page);
-    inventoryPage = new InventoryPage(page);
 
     // Act
     await loginPage.goto("/");
     await loginPage.login(user);
 
     // assert products: as this auto waits
-    await expect
-      .soft(inventoryPage.inventoryItems_loc)
-      .toHaveCount(expectedProductNames.length);
+    await expect(inventoryPage.getInventoryCount()).toHaveCount(
+      expectedProductNames.length
+    );
 
     // this not auto waits so kept after first asserting the count to avoid flakiness
     const actProductNames = await inventoryPage.getAllProductNames();
@@ -53,6 +52,8 @@ test.describe("Inventory test", () => {
   });
 
   test("should display the correct product information", async ({ page }) => {
+    loginPage = new LoginPage(page);
+    inventoryPage = new InventoryPage(page);
     const user = users.valid.standard_user;
     const expectedProducts = Object.values(inventoryData.productData);
 
@@ -60,13 +61,10 @@ test.describe("Inventory test", () => {
     const expectedPrices = expectedProducts.map((p) => p.price);
     const expectedDescriptions = expectedProducts.map((p) => p.description);
 
-    loginPage = new LoginPage(page);
-    inventoryPage = new InventoryPage(page);
-
     await loginPage.goto("/");
     await loginPage.login(user);
 
-    await expect(inventoryPage.inventoryItems_loc).toHaveCount(
+    await expect(inventoryPage.getInventoryCount()).toHaveCount(
       expectedProducts.length
     );
 
@@ -79,19 +77,16 @@ test.describe("Inventory test", () => {
     expect(actualDescriptions).toEqual(expectedDescriptions);
   });
 
-  test("should add a product to the cart", async ({ page }) => {
-    const user = users.valid.standard_user;
-    const products = inventoryData.productData;
-
-    loginPage = new LoginPage(page);
+  test("should add a product to the cart", async ({ loginUser, page }) => {
+    //arrange
     inventoryPage = new InventoryPage(page);
+    const product = inventoryData.productData.Backpack.name;
 
-    await loginPage.goto("/");
-    await loginPage.login(user);
+    //act
+    await inventoryPage.addProductToCart(product); 
 
-    await inventoryPage.addProductToCart(products.Backpack.name);
-
-    await expect(page).toHaveTitle("Swag Labs");
+    //assert
+    await expect(inventoryPage.cartProductCount()).toHaveCount(1);
   });
 
   test("Should sort products name in descending alphabetical order (Z to A)", async ({
