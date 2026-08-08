@@ -1,4 +1,7 @@
+import InventoryPage from "./inventory.page";
+
 class LoginPage {
+  /** @param {import('@playwright/test').Page} page */
   constructor(page) {
     this.page = page;
     this.username = this.page.getByRole("textbox", { name: "Username" });

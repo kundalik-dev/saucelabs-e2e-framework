@@ -1,9 +1,14 @@
 {
   "name": "sauce-demo-auto-practice",
   "version": "1.0.0",
-  "description": "",
+  "description": "E2E UI test automation framework for saucedemo.com using Playwright Test and the Page Object Model.",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -17,6 +22,12 @@
   "type": "module",
   "devDependencies": {
     "@playwright/test": "^1.62.1",
-    "@types/node": "^26.1.2"
+    "@types/node": "^26.1.2",
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.7.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-playwright": "^2.10.5",
+    "globals": "^17.7.0",
+    "prettier": "^3.9.6"
   }
 }
