@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "../fixtures/login.fixture";
 import users from "../data/users";
 import LoginPage from "../pages/login.page";
 import InventoryPage from "../pages/inventory.page";
@@ -92,5 +92,28 @@ test.describe("Inventory test", () => {
     await inventoryPage.addProductToCart(products.Backpack.name);
 
     await expect(page).toHaveTitle("Swag Labs");
+  });
+
+  test("Should sort products name in descending alphabetical order (Z to A)", async ({
+    loginUser,
+    page,
+  }) => {
+    //arrange
+    inventoryPage = new InventoryPage(page);
+    const sortOrder = inventoryData.sortOrder.name.z_a;
+    const productNames = await inventoryPage.getAllProductNames();
+    const expectedNames = [...productNames].sort((a, b) => b.localeCompare(a));
+
+    //act
+    await inventoryPage.selectSortOrder(sortOrder);
+
+    await expect(inventoryPage.getFirstProductName()).toHaveText(
+      expectedNames[0]
+    );
+
+    const actualNames = await inventoryPage.getAllProductNames();
+
+    //assert
+    expect(actualNames).toEqual(expectedNames);
   });
 });

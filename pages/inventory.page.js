@@ -2,16 +2,31 @@ class InventoryPage {
   /** @param {import('@playwright/test').Page} page */
   constructor(page) {
     this.page = page;
+
+    // heading locator
     this.title_loc = this.page.getByTestId("title");
+
+    // product locator
     this.inventoryItems_loc = this.page.locator(".inventory_item");
     this.productNames_loc = this.page.getByTestId("inventory-item-name");
     this.productPrices_loc = this.page.getByTestId("inventory-item-price");
     this.productDescriptions_loc = this.page.getByTestId("inventory-item-desc");
+
+    // cart locator
     this.addToCart_loc = this.page.getByText("Add to cart");
+
+    // sort locator
+    this.sortDropdown_loc = this.page.getByTestId("product-sort-container");
+
+    //footer Locators
   }
 
   async getAllProductNames() {
     return await this.productNames_loc.allTextContents();
+  }
+
+  getFirstProductName() {
+    return this.productNames_loc.first();
   }
 
   async getAllProductPrices() {
@@ -27,6 +42,10 @@ class InventoryPage {
       .filter({ hasText: productName })
       .locator("button")
       .click();
+  }
+
+  async selectSortOrder(sortOrder) {
+    await this.sortDropdown_loc.selectOption({ value: sortOrder });
   }
 }
 

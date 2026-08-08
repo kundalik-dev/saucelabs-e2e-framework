@@ -3,7 +3,7 @@
 ## UI test cases
 
 - should display all essential login elements when the login page load
-- sshould render responsively on mobile viewports
+- should render responsively on mobile viewports
 - should change input border color to red when error state is active
 - should display the error container bar at the bottom of the form
 
