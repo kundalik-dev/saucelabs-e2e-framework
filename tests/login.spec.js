@@ -9,9 +9,11 @@ test.describe("Auth @login", () => {
     // Arrange
     const user = users.valid.standard_user;
     loginPage = new LoginPage(page);
+
     // Act
     await loginPage.goto("/");
-    await loginPage.login(users.valid.standard_user);
+    await loginPage.login(user);
+
     // Assert
     await expect(page).toHaveTitle("Swag Labs");
   });

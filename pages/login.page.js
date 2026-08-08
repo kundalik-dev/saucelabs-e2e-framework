@@ -1,5 +1,3 @@
-import InventoryPage from "./inventory.page";
-
 class LoginPage {
   /** @param {import('@playwright/test').Page} page */
   constructor(page) {

@@ -29,7 +29,7 @@ class InventoryPage {
     const product = await this.inventoryItems_loc
       .filter({ hasText: productName })
       .first();
-    
+
     // await product.getByText("Add to cart").click();
 
     await product.this.addToCart_loc.click();

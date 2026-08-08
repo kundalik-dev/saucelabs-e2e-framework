@@ -25,15 +25,14 @@ test.describe("Inventory test", () => {
 
       // Assert
       await expect(inventoryPage.title_loc).toHaveText(inventory.title);
-    },
+    }
   );
 
   test("should display all available products", async ({ page }) => {
     // Arrange
     const user = users.valid.standard_user;
-    const inventories = inventoryData.productData;
     const expectedProductNames = Object.values(inventoryData.productData).map(
-      (product) => product.name,
+      (product) => product.name
     );
 
     loginPage = new LoginPage(page);
@@ -68,7 +67,7 @@ test.describe("Inventory test", () => {
     await loginPage.login(user);
 
     await expect(inventoryPage.inventoryItems_loc).toHaveCount(
-      expectedProducts.length,
+      expectedProducts.length
     );
 
     const actualNames = await inventoryPage.getAllProductNames();
@@ -90,6 +89,6 @@ test.describe("Inventory test", () => {
     await loginPage.login(user);
 
     await inventoryPage.addProductToCart("Sauce Labs Backpack");
-    await page.waitForTimeout(2000);
+    await expect(page).toHaveTitle("Swag Labs");
   });
 });
