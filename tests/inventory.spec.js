@@ -3,6 +3,7 @@ import users from "../data/users";
 import LoginPage from "../pages/login.page";
 import InventoryPage from "../pages/inventory.page";
 import inventoryData from "../data/inventory.json" with { type: "json" };
+import { priceSortCases } from "../data/inventory-sort.data";
 
 let loginPage;
 let inventoryPage;
@@ -83,13 +84,13 @@ test.describe("Inventory test", () => {
     const product = inventoryData.productData.Backpack.name;
 
     //act
-    await inventoryPage.addProductToCart(product); 
+    await inventoryPage.addProductToCart(product);
 
     //assert
     await expect(inventoryPage.cartProductCount()).toHaveCount(1);
   });
 
-  test("Should sort products name in descending alphabetical order (Z to A)", async ({
+  test("should sort products name in descending alphabetical order (Z to A)", async ({
     loginUser,
     page,
   }) => {
@@ -111,4 +112,13 @@ test.describe("Inventory test", () => {
     //assert
     expect(actualNames).toEqual(expectedNames);
   });
+
+  for (const { sortOrder, direction, compare } of priceSortCases) {
+    test(`should sort products in ${sortOrder} order`, async ({ page }) => {
+      inventoryPage = new InventoryPage(page);
+
+      const productPrice = inventoryPage.getAllProductPrices();
+      console.log(productPrice[0]);
+    });
+  }
 });

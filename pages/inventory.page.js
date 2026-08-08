@@ -30,16 +30,16 @@ class InventoryPage {
     return this.productNames_loc.first();
   }
 
+  async getAllProductPrices() {
+    return await this.productPrices_loc.allTextContents();
+  }
+
   getInventoryCount() {
     return this.inventoryItems_loc;
   }
 
   cartProductCount() {
     return this.cartBadge_loc;
-  }
-
-  async getAllProductPrices() {
-    return await this.productPrices_loc.allTextContents();
   }
 
   async getAllProductDescriptions() {

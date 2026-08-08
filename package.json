@@ -4,6 +4,7 @@
   "description": "E2E UI test automation framework for saucedemo.com using Playwright Test and the Page Object Model.",
   "main": "index.js",
   "scripts": {
+    "report": "pnpm playwright show-report",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
@@ -22,9 +23,9 @@
   "type": "module",
   "devDependencies": {
     "@playwright/test": "^1.62.1",
-    "@types/node": "^26.1.2",
+    "@types/node": "^26.1.1",
     "@eslint/js": "^10.0.1",
-    "eslint": "^10.7.0",
+    "eslint": "^10.6.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-playwright": "^2.10.5",
     "globals": "^17.7.0",
