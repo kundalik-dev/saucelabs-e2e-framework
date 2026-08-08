@@ -4,43 +4,42 @@ import LoginPage from "../pages/login.page";
 
 let loginPage;
 
-test.describe("Auth", () => {
+test.describe("Auth @login", () => {
   test("should login with valid credential", async ({ page }) => {
-    await page.goto("/");
-    await page.getByRole("textbox", { name: "Username" }).fill("standard_user");
-    await page.getByRole("textbox", { name: "Password" }).fill("secret_sauce");
-    await page.getByRole("button", { name: "Login" });
+    // Arrange
+    const user = users.valid.standard_user;
+    loginPage = new LoginPage(page);
+    // Act
+    await loginPage.goto("/");
+    await loginPage.login(users.valid.standard_user);
+    // Assert
     await expect(page).toHaveTitle("Swag Labs");
   });
 
   test("should display error when locked out user credentials entered", async ({
     page,
   }) => {
-    await page.goto("/");
-    await page
-      .getByRole("textbox", { name: "Username" })
-      .fill("locked_out_user");
-    await page.getByRole("textbox", { name: "Password" }).fill("secret_sauce");
-    await page.getByRole("button", { name: "Login" }).click();
-
-    await expect(page.getByRole("heading", { level: 3 })).toHaveText(
-      "Epic sadface: Sorry, this user has been locked out.",
-    );
+    // Arrange
+    const user = users.invalid.locked_out_user;
+    loginPage = new LoginPage(page);
+    // Act
+    loginPage.goto("/");
+    loginPage.login(user);
+    // Assert
+    await expect(loginPage.errorMsg).toHaveText(user.errorMsg);
   });
 
   test("should display error when invalid username is entered", async ({
     page,
   }) => {
-    await page.goto("/");
-    await page
-      .getByRole("textbox", { name: "Username" })
-      .fill("wrong_username");
-    await page.getByRole("textbox", { name: "Password" }).fill("secret_sauce");
-    await page.getByRole("button", { name: "Login" }).click();
-    const errorMsg = page.getByRole("heading", { level: 3 });
-    await expect(errorMsg).toHaveText(
-      "Epic sadface: Username and password do not match any user in this service",
-    );
+    // Act
+    const user = users.invalid.wrong_username;
+    loginPage = new LoginPage(page);
+    // Act
+    await loginPage.goto("/");
+    await loginPage.login(user);
+    // Assert
+    await expect(loginPage.errorMsg).toHaveText(user.errorMsg);
   });
 
   // data driven test for wrong username & password
@@ -49,18 +48,4 @@ test.describe("Auth", () => {
   //       page,
   //     }) => {});
   //   }
-
-  // With POM implementation
-  test("should login with valid credential with POM", async ({ page }) => {
-    // Arrange
-    const user = users.valid.standard_user;
-    loginPage = new LoginPage(page);
-
-    // Act
-    await loginPage.goto("/");
-    await loginPage.login(users.valid.standard_user);
-
-    // Assert
-    await expect(page).toHaveTitle("Swag Labs");
-  });
 });
