@@ -1,9 +1,9 @@
 import { test, expect } from "../fixtures/login.fixture";
-import users from "../data/users";
 import LoginPage from "../pages/login.page";
 import InventoryPage from "../pages/inventory.page";
-import inventoryData from "../data/inventory.json" with { type: "json" };
-import { priceSortCases } from "../data/inventory-sort.data";
+import users from "../data/users-data";
+import inventoryData from "../data/inventory-data.json" with { type: "json" };
+import { priceSortCases } from "../data/inventory-sort-data";
 
 let loginPage;
 let inventoryPage;
