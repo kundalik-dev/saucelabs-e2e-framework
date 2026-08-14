@@ -1,10 +1,10 @@
-import { test, expect } from "../fixtures/login.fixture";
-import LoginPage from "../pages/login.page";
-import InventoryPage from "../pages/inventory.page";
-import users from "../data/users-data";
-import inventoryData from "../data/inventory-data.json" with { type: "json" };
-import { priceSortCases } from "../data/inventory-sort-data";
-import { CommonUtils } from "../utils/common";
+import { test, expect } from "../../fixtures/login.fixture";
+import LoginPage from "../../pages/login.page";
+import InventoryPage from "../../pages/inventory.page";
+import users from "../../test-data/users-data";
+import inventoryData from "../../test-data/inventory-data.json" with { type: "json" };
+import { priceSortCases } from "../../test-data/inventory-sort-data";
+import { CommonUtils } from "../../utils/common.utils";
 
 /** @type {LoginPage} */
 let loginPage;

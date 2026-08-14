@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
-import users from "../data/users-data";
-import LoginPage from "../pages/login.page";
+import users from "../../test-data/users-data";
+import LoginPage from "../../pages/login.page";
 
 let loginPage;
 
@@ -28,7 +28,7 @@ test.describe("Auth @login", () => {
     loginPage.goto("/");
     loginPage.login(user);
     // Assert
-    await expect(loginPage.errorMsg).toHaveText(user.errorMsg);
+    await expect(loginPage.errorMsgLoc).toHaveText(user.errorMsg);
   });
 
   test("should display error when invalid username is entered", async ({
@@ -41,8 +41,6 @@ test.describe("Auth @login", () => {
     await loginPage.goto("/");
     await loginPage.login(user);
     // Assert
-    await expect(loginPage.errorMsg).toHaveText(user.errorMsg);
+    await expect(loginPage.errorMsgLoc).toHaveText(user.errorMsg);
   });
-
-   
 });

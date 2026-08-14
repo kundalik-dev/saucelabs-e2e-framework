@@ -4,12 +4,12 @@ class LoginPage {
     this.page = page;
 
     // login locators
-    this.username = this.page.getByRole("textbox", { name: "Username" });
-    this.password = this.page.getByRole("textbox", { name: "Password" });
-    this.loginButton = this.page.getByRole("button", { name: "Login" });
+    this.usernameLoc = this.page.getByRole("textbox", { name: "Username" });
+    this.passwordLoc = this.page.getByRole("textbox", { name: "Password" });
+    this.loginButtonLoc = this.page.getByRole("button", { name: "Login" });
 
     // Error message
-    this.errorMsg = this.page.getByRole("heading", { level: 3 });
+    this.errorMsgLoc = this.page.getByRole("heading", { level: 3 });
   }
 
   async goto(url) {
@@ -17,9 +17,9 @@ class LoginPage {
   }
 
   async login(user) {
-    await this.username.fill(user.username);
-    await this.password.fill(user.password);
-    await this.loginButton.click();
+    await this.usernameLoc.fill(user.username);
+    await this.passwordLoc.fill(user.password);
+    await this.loginButtonLoc.click();
   }
 }
 export default LoginPage;

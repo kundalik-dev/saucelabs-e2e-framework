@@ -4,57 +4,56 @@ class InventoryPage {
     this.page = page;
 
     // heading locator
-    this.title_loc = this.page.getByTestId("title");
+    this.titleLoc = this.page.getByTestId("title");
+    this.pageFooterLoc = this.page.getByTestId("footer");
 
     // product locator
-    this.inventoryItems_loc = this.page.locator(".inventory_item");
-    this.productNames_loc = this.page.getByTestId("inventory-item-name");
-    this.productPrices_loc = this.page.getByTestId("inventory-item-price");
-    this.productDescriptions_loc = this.page.getByTestId("inventory-item-desc");
+    this.inventoryItemsLoc = this.page.locator(".inventory_item");
+    this.productNamesLoc = this.page.getByTestId("inventory-item-name");
+    this.productPricesLoc = this.page.getByTestId("inventory-item-price");
+    this.productDescriptionsLoc = this.page.getByTestId("inventory-item-desc");
 
     // cart locator
-    this.addToCart_loc = this.page.getByText("Add to cart");
-    this.cartBadge_loc = this.page.getByTestId("shopping-cart-badge");
+    this.addToCartLoc = this.page.getByText("Add to cart");
+    this.cartBadgeLoc = this.page.getByTestId("shopping-cart-badge");
 
     // sort locator
-    this.sortDropdown_loc = this.page.getByTestId("product-sort-container");
-
-    //footer Locators
+    this.sortDropdownLoc = this.page.getByTestId("product-sort-container");
   }
 
   pageTitle() {
-    return this.title_loc;
+    return this.titleLoc;
   }
 
   async getAllProductNames() {
-    return await this.productNames_loc.allTextContents();
+    return await this.productNamesLoc.allTextContents();
   }
 
   getFirstProductName() {
-    return this.productNames_loc.first();
+    return this.productNamesLoc.first();
   }
 
   getFirstProductPrice() {
-    return this.productPrices_loc.first();
+    return this.productPricesLoc.first();
   }
   async getAllProductPrices() {
-    return await this.productPrices_loc.allTextContents();
+    return await this.productPricesLoc.allTextContents();
   }
 
   getInventoryCount() {
-    return this.inventoryItems_loc;
+    return this.inventoryItemsLoc;
   }
 
   cartProductCount() {
-    return this.cartBadge_loc;
+    return this.cartBadgeLoc;
   }
 
   async getAllProductDescriptions() {
-    return await this.productDescriptions_loc.allTextContents();
+    return await this.productDescriptionsLoc.allTextContents();
   }
 
   async addProductToCart(productName) {
-    await this.inventoryItems_loc
+    await this.inventoryItemsLoc
       .filter({ hasText: productName })
       .locator("button")
       .click();
@@ -63,7 +62,7 @@ class InventoryPage {
   async removeProductFromCart() {}
 
   async selectSortOrder(sortOrder) {
-    await this.sortDropdown_loc.selectOption({ value: sortOrder });
+    await this.sortDropdownLoc.selectOption({ value: sortOrder });
   }
 }
 
