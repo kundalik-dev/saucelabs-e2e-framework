@@ -40,7 +40,7 @@ class InventoryPage {
     return await this.productPricesLoc.allTextContents();
   }
 
-  getInventoryCount() {
+  get getInventoryCount() {
     return this.inventoryItemsLoc;
   }
 
@@ -59,7 +59,12 @@ class InventoryPage {
       .click();
   }
 
-  async removeProductFromCart() {}
+  async removeProductFromCart(productName) {
+    await this.inventoryItemsLoc
+      .filter({ hasText: productName })
+      .locator("button")
+      .click();
+  }
 
   async selectSortOrder(sortOrder) {
     await this.sortDropdownLoc.selectOption({ value: sortOrder });

@@ -1,10 +1,11 @@
 # 🎭 SauceDemo E2E Automation Framework
 
-![Playwright Tests](https://github.com/kundalik-dev/e2e-saucedemo-playwright/actions/workflows/playwright.yml/badge.svg)
-![Playwright](https://img.shields.io/badge/Playwright-1.61-2EAD33?logo=playwright&logoColor=white)
+![Playwright](https://img.shields.io/badge/Playwright-1.62-2EAD33?logo=playwright&logoColor=white)
 ![Node](https://img.shields.io/badge/Node-LTS-339933?logo=node.js&logoColor=white)
-![pnpm](https://img.shields.io/badge/pnpm-10.32-F69220?logo=pnpm&logoColor=white)
+![pnpm](https://img.shields.io/badge/pnpm-11.18-F69220?logo=pnpm&logoColor=white)
 ![License](https://img.shields.io/badge/License-ISC-blue.svg)
+
+> **CI status**: no GitHub Actions workflow exists yet in this repo (no `.github/` directory) — the badge that used to live here pointed at a workflow that isn't set up. See [Roadmap](#roadmap).
 
 An end-to-end UI test automation framework for **[saucedemo.com](https://www.saucedemo.com/)**, built with [Playwright Test](https://playwright.dev/) in JavaScript. The framework follows the **Page Object Model (POM)** and is driven by external, decoupled test data (`JSON` / `JS`), keeping test logic, page interactions, and test data cleanly separated.
 
@@ -23,6 +24,8 @@ An end-to-end UI test automation framework for **[saucedemo.com](https://www.sau
   - [Architecture](#architecture)
     - [Page Objects](#page-objects)
     - [Tests](#tests)
+    - [Fixtures](#fixtures)
+    - [Utils](#utils)
     - [Test Data](#test-data)
   - [Test Case Naming Convention](#test-case-naming-convention)
   - [Coding Conventions](#coding-conventions)
@@ -44,7 +47,7 @@ An end-to-end UI test automation framework for **[saucedemo.com](https://www.sau
 | Package Manager | [pnpm](https://pnpm.io/)                             |
 | Linting/Format  | ESLint (flat config) + Prettier                      |
 | Reporting       | Playwright HTML Reporter                             |
-| CI/CD           | GitHub Actions                                       |
+| CI/CD           | GitHub Actions _(planned — not set up yet)_          |
 | Target App      | [saucedemo.com](https://www.saucedemo.com/)          |
 
 ---
@@ -52,37 +55,37 @@ An end-to-end UI test automation framework for **[saucedemo.com](https://www.sau
 ## Project Structure
 
 ```
-03-e2e-saucedemo-pw-framework/
-├── .github/
-│   └── workflows/
-│       ├── playwright.yml              # CI: lint job → test job (needs: lint)
-│       └── update-visual-baselines.yml # Manual-only: regenerates visual snapshots on Linux
+04-saucelabs-e2e-framework/
 ├── docs/
 │   ├── frameworks/                # Target architecture (01-07) + implementation logs (08-11)
 │   └── test-cases/                # Manual/automation test case documentation
+├── fixtures/
+│   └── login.fixture.js           # `loginUser` fixture — logs in as standard_user, still drives a real UI login
 ├── pages/                         # Page Object Model classes
 │   ├── login.page.js
-│   ├── inventory.page.js
-│   ├── cart.page.js
-│   ├── checkout.page.js
-│   └── payment.page.js
-├── test-data/                      # Test data fixtures (JSON / JS)
-│   ├── auth-data.js
+│   └── inventory.page.js
+├── test-data/                      # Test data (JSON / JS)
+│   ├── users-data.js
 │   ├── inventory-data.json
-│   └── footer-data.js
+│   └── inventory-sort-data.js
 ├── tests/
-│   ├── ui/                         # Single-page / component-level UI tests
-│   ├── e2e/                        # Multi-page, full user-journey tests
-│   └── api/                        # API-level tests
-├── visual-baselines/               # Approved snapshots for visual regression tests
+│   ├── ui/
+│   │   └── login.spec.js
+│   └── e2e/
+│       ├── inventory.spec.js
+│       └── checkout.spec.js       # empty — not started
+├── utils/
+│   └── common.utils.js            # CommonUtils.formatPrice(s) / .formatPrices(arr)
 ├── playwright-report/              # Generated HTML report (git-ignored)
 ├── test-results/                   # Raw test run artifacts (git-ignored)
 ├── eslint.config.mjs               # ESLint flat config (+ eslint-plugin-playwright on specs)
 ├── .prettierrc.json / .prettierignore
 ├── playwright.config.js            # Global Playwright configuration
 ├── package.json
-└── CLAUDE.md / AGENTS.md           # AI-assistant & contributor guidelines
+└── CLAUDE.md / AGENTS.md / copilot-instructions.md   # AI-assistant & contributor guidelines
 ```
+
+Not yet present, despite being referenced elsewhere as target architecture: `.github/workflows/` (no CI configured at all), `visual-baselines/` (no visual regression tests written yet), `tests/api/`, `pages/cart.page.js`, `pages/checkout.page.js`, `pages/payment.page.js`. See [Roadmap](#roadmap).
 
 ---
 
@@ -98,7 +101,7 @@ An end-to-end UI test automation framework for **[saucedemo.com](https://www.sau
 ```bash
 # 1. Clone the repository
 git clone <repo-url>
-cd 03-e2e-saucedemo-pw-framework
+cd e2e-saucedemo-playwright-framework
 
 # 2. Install dependencies
 pnpm install
@@ -111,26 +114,31 @@ pnpm exec playwright install --with-deps
 
 ## Running Tests
 
+> There's no `pnpm run test` script in `package.json` yet — run Playwright directly via `pnpm exec playwright test` (or add the alias yourself).
+
 ```bash
 # Run the full suite (chromium only — other browsers are commented out in playwright.config.js)
-pnpm run test
+pnpm exec playwright test
 
 # Run a single spec file
-pnpm run test tests/ui/auth.ui.spec.js
+pnpm exec playwright test tests/ui/login.spec.js
 
 # Run a single test by name
-pnpm run test -g "should login with valid credentials"
+pnpm exec playwright test -g "should login with valid credential"
 
 # Run tests by tag
-pnpm run test --grep @smoke
+pnpm exec playwright test --grep @smoke
+
+# List tests without running them
+pnpm exec playwright test --list
 
 # Run in headed / debug mode
-pnpm run test --debug
+pnpm exec playwright test --debug
 
 # Open the last HTML report
 pnpm run report
 
-# Lint / format (CI runs these as a gate before tests)
+# Lint / format (no CI exists yet to gate on these — run manually before committing)
 pnpm run lint
 pnpm run lint:fix
 pnpm run format:check
@@ -153,38 +161,48 @@ This opens an interactive report with test results, execution traces, screenshot
 
 ## Architecture
 
-**Flow:** `tests/*.spec.js` → `pages/*.page.js` (Page Objects) → `test-data/*` (fixtures)
+**Flow:** `tests/{ui,e2e}/*.spec.js` → `fixtures/*.fixture.js` (optional) → `pages/*.page.js` (Page Objects) → `test-data/*` / `utils/*.utils.js`
 
 ### Page Objects
 
-Located in [`pages/`](pages). One class per page, named `<pagename>.page.js`, exporting a default class (e.g. `login.page.js` → `class LoginPage`).
+Located in [`pages/`](pages) — currently `login.page.js` and `inventory.page.js`. One class per page, named `<pagename>.page.js`, exporting a default class (e.g. `login.page.js` → `class LoginPage`).
 
 Each page object:
 
 - Accepts a Playwright `page` in its constructor and stores it as `this.page`.
-- Declares all locators as constructor properties, grouped by UI region with `//` comments (e.g. _Login Form Inputs_, _Carts locator_, _footer_).
-- Exposes action methods (`login`, `launchUrl`, `sortProducts`, …) that operate on those locators.
+- Declares all locators as constructor properties, camelCase and suffixed `Loc` (e.g. `titleLoc`, `usernameLoc`), grouped by UI region with `//` comments.
+- Exposes action methods (`login`, `selectSortOrder`, `addProductToCart`, …) that operate on those locators.
 - Tests never call `page.locator(...)` directly — they always go through a page object's named locator or method.
+
+`cart.page.js`, `checkout.page.js`, and `payment.page.js` don't exist yet — see [Roadmap](#roadmap).
 
 ### Tests
 
 Located in [`tests/`](tests), split by scope:
 
-| Folder      | Purpose                                                |
-| ----------- | ------------------------------------------------------ |
-| `tests/ui`  | Validates a **single page** in isolation               |
-| `tests/e2e` | Spans **multiple page objects** or a full user journey |
-| `tests/api` | API-level tests                                        |
+| Folder      | Purpose                                                | Current specs                            |
+| ----------- | ------------------------------------------------------- | ----------------------------------------- |
+| `tests/ui`  | Validates a **single page** in isolation                | `login.spec.js`                           |
+| `tests/e2e` | Spans **multiple page objects** or a full user journey  | `inventory.spec.js`, `checkout.spec.js` (empty) |
+| `tests/api` | API-level tests                                          | doesn't exist yet                         |
 
-Each spec file instantiates the relevant page object(s) in `test.beforeEach`, drives the flow, and asserts with `expect` / `expect.soft`.
+Spec filenames are just `<feature>.spec.js` — the `tests/ui`/`tests/e2e` folder itself encodes UI-vs-E2E, not a `.ui.`/`.e2e.` suffix in the filename. Each spec instantiates the relevant page object(s) (directly, or via the `loginUser` fixture) and asserts with `expect` / `expect.soft`.
+
+### Fixtures
+
+Located in [`fixtures/`](fixtures) — currently just `login.fixture.js`, which extends `@playwright/test`'s `base` with a `loginUser` fixture that logs in as `standard_user` and asserts the inventory page is reached before the test body runs. Specs that want a logged-in state import `{ test, expect }` from the fixture file instead of `@playwright/test`. It still drives a real UI login each time — it centralizes the step, it doesn't skip it (see [Roadmap](#roadmap) for the planned `storageState` skip).
+
+### Utils
+
+Located in [`utils/`](utils) — currently just `common.utils.js`, exporting `CommonUtils` with static helpers like `formatPrice("$29.99")` → `29.99`, for pure data transforms that don't belong on a page object.
 
 ### Test Data
 
 Located in [`test-data/`](test-data):
 
-- `<pageName>-data.json` — a single object of expected strings/URLs per page (e.g. `inventory-data.json`).
-- `<pageName>List-data.json` — an array of row objects for per-item, data-driven assertions.
-- `.js` files (e.g. `auth-data.js`) — used when data needs structure/logic beyond plain JSON (e.g. grouped valid/invalid credential sets).
+- `users-data.js` — `valid.*` / `invalid.*` grouped test user credentials, each with `username`, `password`, and (for invalid users) `errorMsg`.
+- `inventory-data.json` — expected product names/prices/descriptions and sort-order values for the inventory page.
+- `inventory-sort-data.js` — data-driven sort test cases (`sortOrder`, `direction`, `compare` function pairs).
 
 ---
 
@@ -210,51 +228,47 @@ should display products list
 
 ## Coding Conventions
 
-- **camelCase** for all identifiers.
-- Locator properties are suffixed with `Loc` (e.g. `usernameLoc`, `productSortLoc`).
-- One page object class per file; one spec file per feature/page.
+- **Filenames**: kebab-case (`login.page.js`, `inventory-sort-data.js`) — standard JS/TS convention.
+- **Identifiers**: camelCase for variables/properties/methods; PascalCase for classes.
+- Locator properties are suffixed with `Loc` (e.g. `usernameLoc`, `titleLoc`).
+- One page object class per file; one spec file per feature/page, placed under `tests/ui/` or `tests/e2e/` (the folder, not the filename, encodes which).
 
-Full contributor/AI-agent guidelines live in [`CLAUDE.md`](CLAUDE.md) / [`AGENTS.md`](AGENTS.md).
+Full contributor/AI-agent guidelines live in [`CLAUDE.md`](CLAUDE.md) / [`AGENTS.md`](AGENTS.md) / [`copilot-instructions.md`](copilot-instructions.md).
 
 ---
 
 ## CI/CD
 
-**GitHub Actions** (see [`.github/workflows/playwright.yml`](.github/workflows/playwright.yml)) runs on every push and pull request to `main`/`master` (not currently `qabranch` — see `docs/frameworks/11-ci-triggers-and-browser-install-explained.md`), as two jobs:
+**Not set up yet.** There is no `.github/` directory in this repo, so no GitHub Actions workflow currently runs on push or PR — lint and tests are run manually (see [Running Tests](#running-tests)).
 
-1. **`lint`** — installs deps, runs `pnpm run lint` (ESLint) and `pnpm run format:check` (Prettier).
-2. **`test`** (`needs: lint`, only runs if lint passes) — installs Playwright browsers, runs the suite, uploads the HTML report as a build artifact.
-
-Actions are pinned to their current major versions (`actions/checkout@v7`, `actions/setup-node@v7`, `actions/upload-artifact@v7`) — check `https://api.github.com/repos/<owner>/<repo>/releases/latest` before bumping, GitHub periodically deprecates old runtimes those majors depend on.
-
-A separate, **manually-triggered** workflow, [`update-visual-baselines.yml`](.github/workflows/update-visual-baselines.yml) (`workflow_dispatch` only — never runs on push/PR), regenerates the visual regression baselines under `visual-baselines/` on the same `ubuntu-latest` runner the real CI uses, and commits them back. Run it from the **Actions** tab only after an intentional UI change — see `docs/frameworks/10-ci-fixes-node-runner-and-visual-baselines.md` for the full walkthrough and why it exists (snapshot filenames are OS-specific, so a baseline captured on a dev machine can't satisfy Linux CI).
-
-A Jenkins pipeline is also planned (see [Roadmap](#roadmap)).
+`docs/frameworks/09-11` describe a target/planned setup (a `lint` → `test` two-job pipeline, action versions pinned to their current majors, plus a manually-triggered `update-visual-baselines.yml` workflow) — treat those as design notes for CI to be built, not a description of what's running today. A Jenkins pipeline is also planned (see [Roadmap](#roadmap)).
 
 ---
 
 ## Roadmap
 
+- [ ] Set up GitHub Actions CI from scratch — no `.github/workflows/` exists yet (a `lint` → `test` pipeline is designed in `docs/frameworks/09-11` but never implemented)
+- [ ] Add a `pnpm run test` script to `package.json` — currently there's no alias, use `pnpm exec playwright test` directly
 - [ ] `global-setup.js` to log in once and persist an authenticated `storageState.json`, so tests that don't test login itself can skip the UI login step
-- [ ] Custom Playwright fixtures to auto-wire page objects into tests
-- [ ] Complete `cart.page.js`, `checkout.page.js`, `payment.page.js` and their corresponding `tests/e2e` specs
-- [ ] `tests/api` coverage
+- [ ] Complete `cart.page.js`, `checkout.page.js`, `payment.page.js` and their corresponding `tests/e2e` specs (`checkout.spec.js` exists but is empty)
+- [ ] `tests/api` coverage — directory doesn't exist yet
+- [ ] Visual regression testing — no `snapshotDir` configured, no `toHaveScreenshot()` calls, no `visual-baselines/` directory yet
+- [ ] Fix pre-existing `no-unused-vars` lint errors in `tests/e2e/inventory.spec.js` (unused `page`/`loginUser` fixture args) — `pnpm run lint` currently fails
 - [ ] CSV-driven data-source support
 - [ ] Allure reporting
 - [ ] Jenkins pipeline
-- [ ] Extend CI triggers (`push`/`pull_request`) to cover `qabranch`, not just `main`/`master`
-- [ ] Install only the Chromium binary in CI (`playwright install --with-deps chromium`) instead of all browsers, since only the `chromium` project is enabled
+- [ ] SonarCloud for code quality (see `docs/todo.md`)
 
-> ESLint + Prettier, GitHub Actions action-version fixes, and the `Update Visual Baselines` workflow are already done — see [CI/CD](#cicd) above.
+> ESLint + Prettier config, the `login.fixture.js` `loginUser` fixture, and the `test-data`/`tests/ui`+`tests/e2e`/`fixtures`/`utils` folder structure are already done.
 
 ---
 
 ## Contributing
 
-1. Branch off `qabranch` for new work; `qabranch` gets promoted into `main` via PR once validated (a lightweight `feature → qabranch → main` flow).
+1. Only `main` exists as a branch today (no `qabranch` yet, despite being referenced in some docs as a planned flow) — branch off `main` for new work.
 2. Follow the [naming](#test-case-naming-convention) and [coding](#coding-conventions) conventions above.
-3. Run `pnpm run lint` and `pnpm run format:check` (or `lint:fix`/`format` to auto-fix) — CI gates the test job on these passing.
-4. Ensure `pnpm run test` passes locally before opening a PR.
+3. Run `pnpm run lint` and `pnpm run format:check` (or `lint:fix`/`format` to auto-fix) manually — there's no CI to gate on these yet.
+4. Ensure `pnpm exec playwright test` passes locally before opening a PR.
 
 ---
 

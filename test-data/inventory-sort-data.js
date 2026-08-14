@@ -23,4 +23,5 @@ const nameSortCases = [
     compare: (a, b) => b.localCompare(a),
   },
 ];
+
 export { priceSortCases, nameSortCases };

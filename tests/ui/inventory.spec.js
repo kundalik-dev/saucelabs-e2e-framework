@@ -5,28 +5,30 @@ import users from "../../test-data/users-data";
 import inventoryData from "../../test-data/inventory-data.json" with { type: "json" };
 import { priceSortCases } from "../../test-data/inventory-sort-data";
 import { CommonUtils } from "../../utils/common.utils";
+import { loginData } from "../../test-data/login-page-data";
 
 /** @type {LoginPage} */
 let loginPage;
 /** @type {InventoryPage} */
 let inventoryPage;
 
-test.describe("Inventory Test @inventory", () => {
+test.describe("Inventory Tests @inventory", () => {
   test.beforeEach(async ({ page }) => {
     loginPage = new LoginPage(page);
     inventoryPage = new InventoryPage(page);
+
+    await loginPage.goto(loginData.loginPageUrl);
   });
 
   test(
-    "should navigate to the inventory page after login",
+    "should navigate to the inventory page after valid login",
     { tag: ["@smoke", "@inventory"] },
-    async ({ page }) => {
+    async ({}) => {
       // Arrange
-      const user = users.valid.standard_user;
+      const user = users.valid.standardUser;
       const inventory = inventoryData.basicData;
 
       // Act
-      await loginPage.goto("/");
       await loginPage.login(user);
 
       // Assert
@@ -34,40 +36,37 @@ test.describe("Inventory Test @inventory", () => {
     }
   );
 
-  test("should display all available products", async ({ page }) => {
+  test("should display all available products", async ({}) => {
     // Arrange
-    const user = users.valid.standard_user;
-    const expectedProductNames = Object.values(inventoryData.productData).map(
+    const user = users.valid.standardUser;
+    const expectedNames = Object.values(inventoryData.productData).map(
       (product) => product.name
     );
 
     // Act
-    await loginPage.goto("/");
     await loginPage.login(user);
 
-    // assert products: as this auto waits
-    await expect(inventoryPage.getInventoryCount()).toHaveCount(
-      expectedProductNames.length
+    // assert products counts first: as this auto waits
+    await expect(inventoryPage.getInventoryCount).toHaveCount(
+      expectedNames.length
     );
 
-    // this not auto waits so kept after first asserting the count to avoid flakiness
-    const actProductNames = await inventoryPage.getAllProductNames();
-    expect(actProductNames).toEqual(expectedProductNames);
+    // Assert count first to trigger auto-waiting before fetching the all products names.
+    const actualNames = await inventoryPage.getAllProductNames();
+    expect(actualNames).toEqual(expectedNames);
   });
 
   test("should display the correct product information", async ({
-    loginUser,
-    page,
+    _loginUser,
   }) => {
-    const user = users.valid.standard_user;
-    const expectedProducts = Object.values(inventoryData.productData);
+    const expectedProductInfo = Object.values(inventoryData.productData);
 
-    const expectedNames = expectedProducts.map((p) => p.name);
-    const expectedPrices = expectedProducts.map((p) => p.price);
-    const expectedDescriptions = expectedProducts.map((p) => p.description);
+    const expectedNames = expectedProductInfo.map((p) => p.name);
+    const expectedPrices = expectedProductInfo.map((p) => p.price);
+    const expectedDescriptions = expectedProductInfo.map((p) => p.description);
 
-    await expect(inventoryPage.getInventoryCount()).toHaveCount(
-      expectedProducts.length
+    await expect(inventoryPage.getInventoryCount).toHaveCount(
+      expectedProductInfo.length
     );
 
     const actualNames = await inventoryPage.getAllProductNames();
@@ -79,9 +78,9 @@ test.describe("Inventory Test @inventory", () => {
     expect(actualDescriptions).toEqual(expectedDescriptions);
   });
 
-  test("should add product to the cart", async ({ loginUser, page }) => {
+  test("should add product to the cart", async ({ _loginUser, page }) => {
     //arrange
-    const product = inventoryData.productData.Backpack.name;
+    const product = inventoryData.productData.backpack.name;
 
     //act
     await inventoryPage.addProductToCart(product);

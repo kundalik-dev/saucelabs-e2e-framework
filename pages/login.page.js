@@ -21,5 +21,10 @@ class LoginPage {
     await this.passwordLoc.fill(user.password);
     await this.loginButtonLoc.click();
   }
+
+  // getter for error message returns the error message locator
+  get getErrorMessage() {
+    return this.errorMsgLoc;
+  }
 }
 export default LoginPage;

@@ -33,9 +33,11 @@ An end-to-end UI test automation framework in JavaScript using Playwright Test, 
 ## Requirements
 
 - Node.js LTS (developed against Node `v22.x`)
-- **pnpm** as the package manager — see `packageManager` in `package.json`. Do not use `npm`/`yarn` to install or add dependencies.
+- **pnpm** as the package manager — see `devEngines.packageManager` in `package.json` (pnpm `^11.18.0`). Do not use `npm`/`yarn` to install or add dependencies.
 
 ## Commands
+
+> **There is no `pnpm run test` script in `package.json`** — only `report`, `lint`, `lint:fix`, `format`, `format:check` are defined. Run Playwright directly via `pnpm exec playwright test`.
 
 ```bash
 # install dependencies
@@ -45,27 +47,30 @@ pnpm install
 pnpm exec playwright install --with-deps
 
 # run the full suite (chromium only; other browsers are commented out in playwright.config.js)
-pnpm run test
+pnpm exec playwright test
 
 # run a single spec file
-pnpm run test tests/ui/login.spec.js
+pnpm exec playwright test tests/ui/login.spec.js
 
 # run a single test by name
-pnpm run test -g "should login with valid credentials"
+pnpm exec playwright test -g "should login with valid credential"
 
 # run tests by tag (tags are embedded in test titles or via the `tag` option)
-pnpm run test --grep @smoke
+pnpm exec playwright test --grep @smoke
 
-# run headed/debug
-pnpm run test --debug
+# list tests without running them
+pnpm exec playwright test --list
 
-# update visual regression baselines (see Visual regression testing below)
+# run headed/debug (note: headless: false is already set in playwright.config.js, so runs are headed by default)
+pnpm exec playwright test --debug
+
+# update visual regression baselines (see Visual regression testing below — not yet applicable, no visual tests exist)
 pnpm exec playwright test --update-snapshots
 
 # open the last HTML report
 pnpm run report
 
-# lint (must pass before pushing — CI runs this as a gate before tests)
+# lint (there is no CI to gate this yet — run manually before committing)
 pnpm run lint
 pnpm run lint:fix
 
@@ -80,27 +85,29 @@ Keep this section current — it's the fastest way for an agent to know what's r
 
 | Area                                                 | State                                                                                                                                                                                                                                                                                                                               |
 | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `pages/login.page.js`                                | ✅ Implemented                                                                                                                                                                                                                                                                                                                      |
-| `pages/inventory.page.js`                            | ✅ Implemented                                                                                                                                                                                                                                                                                                                      |
+| `pages/login.page.js`                                | ✅ Implemented — `usernameLoc`/`passwordLoc`/`loginButtonLoc`/`errorMsgLoc`, `goto`/`login`/`getErrorMessage`                                                                                                                                                                                                                      |
+| `pages/inventory.page.js`                            | ✅ Implemented, including `removeProductFromCart`                                                                                                                                                                                                                                                                                   |
 | `pages/cart.page.js`                                 | ⬜ Not started — doesn't exist yet                                                                                                                                                                                                                                                                                                  |
 | `pages/checkout.page.js`                             | ⬜ Not started — doesn't exist yet                                                                                                                                                                                                                                                                                                  |
 | `pages/payment.page.js`                              | ⬜ Not started — doesn't exist yet                                                                                                                                                                                                                                                                                                  |
 | `tests/ui/login.spec.js`                             | ✅ Implemented                                                                                                                                                                                                                                                                                                                      |
-| `tests/e2e/inventory.spec.js`                        | ✅ Implemented — has pre-existing `no-unused-vars` lint errors on unused `page`/`loginUser` fixture args; fix before next push                                                                                                                                                                                                    |
+| `tests/ui/inventory.spec.js`                         | ✅ Implemented — spans `LoginPage` + `InventoryPage` via the `loginUser` fixture, so per the placement rule below it arguably belongs in `tests/e2e/`, but it currently lives in `tests/ui/`; has pre-existing `no-unused-vars` lint errors (unused `page`/`loginUser` fixture args) — `pnpm run lint` currently fails because of this file |
 | `tests/e2e/checkout.spec.js`                         | ⬜ Empty — not started                                                                                                                                                                                                                                                                                                              |
 | `tests/api/*`                                        | ⬜ Not started — directory doesn't exist yet                                                                                                                                                                                                                                                                                        |
 | `fixtures/login.fixture.js`                          | ✅ Implemented — `loginUser` fixture logs in as `standard_user` and asserts the inventory URL is reached                                                                                                                                                                                                                          |
 | `utils/common.utils.js`                              | ✅ Implemented — `CommonUtils.formatPrice(s)` / `.formatPrices(arr)` parse `"$29.99"`-style price strings to numbers                                                                                                                                                                                                              |
 | `global-setup.js` / `storageState`                   | ⬜ Not started — every spec still logs in via the UI (the `loginUser` fixture above drives a real UI login each time, it doesn't skip it)                                                                                                                                                                                          |
-| CI (GitHub Actions)                                  | ✅ `.github/workflows/playwright.yml` — two jobs: `lint` (ESLint + Prettier check) → `test` (`needs: lint`, runs the suite, uploads HTML report). Triggers on push/PR to `main`/`master` only — **not** `qabranch` yet. Actions pinned to `@v7` (checkout/setup-node/upload-artifact). See `docs/frameworks/10-*.md` and `11-*.md`. |
-| `Update Visual Baselines` workflow                   | ✅ `.github/workflows/update-visual-baselines.yml` — `workflow_dispatch` only, regenerates `visual-baselines/**` on `ubuntu-latest` and commits them back. Never runs automatically.                                                                                                                                                |
+| `pnpm run test` script                               | ⬜ Not started — `package.json` only defines `report`/`lint`/`lint:fix`/`format`/`format:check`; use `pnpm exec playwright test` directly                                                                                                                                                                                         |
+| CI (GitHub Actions)                                  | ⬜ **Not started — no `.github/` directory exists in this repo at all** (confirmed via `git ls-files` and `git log --all -- .github`, empty on every branch). `docs/frameworks/09-11` read like implementation/postmortem logs for a `lint`→`test` pipeline and an `update-visual-baselines.yml` workflow, but none of it was ever actually committed — treat those docs as design notes to build from, not evidence anything is running. |
+| `Update Visual Baselines` workflow                   | ⬜ Not started — same as above, `.github/workflows/update-visual-baselines.yml` doesn't exist                                                                                                                                                                                                                                       |
 | Jenkins pipeline                                     | ⬜ Not started                                                                                                                                                                                                                                                                                                                      |
-| Allure reporting                                     | ⬜ Not started (reporter is `html` only)                                                                                                                                                                                                                                                                                            |
-| ESLint + Prettier                                    | ✅ `eslint.config.mjs` (flat config, `eslint-plugin-playwright` on specs) + `.prettierrc.json`; `pnpm lint`/`pnpm format:check` gate CI. See `docs/frameworks/09-eslint-prettier-setup.md`                                                                                                                                          |
-| CI triggers cover `qabranch`                         | ⬜ Not started — `qabranch` pushes/PRs currently get no CI feedback. See `docs/frameworks/11-ci-triggers-and-browser-install-explained.md`                                                                                                                                                                                          |
-| CI installs only Chromium (not all 3 browsers)       | ⬜ Not started — `playwright install --with-deps` still installs Firefox/WebKit binaries nobody uses. Same doc as above.                                                                                                                                                                                                            |
+| Allure reporting                                     | ⬜ Not started (`reporter: "html"` in `playwright.config.js`, confirmed — that part is accurate)                                                                                                                                                                                                                                    |
+| ESLint + Prettier                                    | ✅ `eslint.config.mjs` (flat config, `eslint-plugin-playwright` on specs) + `.prettierrc.json` exist and work (`pnpm run lint` / `pnpm run format:check` run fine) — but nothing gates on them since there's no CI. See `docs/frameworks/09-eslint-prettier-setup.md`                                                             |
+| CI triggers cover `qabranch`                         | ⬜ N/A — moot until CI exists at all (see CI row above)                                                                                                                                                                                                                                                                             |
+| CI installs only Chromium (not all 3 browsers)       | ⬜ N/A — moot until CI exists at all (see CI row above)                                                                                                                                                                                                                                                                             |
+| Visual regression testing                            | ⬜ Not started — no `snapshotDir` configured in `playwright.config.js`, no `toHaveScreenshot()` calls anywhere in `tests/`, no `visual-baselines/` directory                                                                                                                                                                       |
 
-When you finish implementing something in this table, update its row instead of leaving it stale.
+When you finish implementing something in this table, update its row instead of leaving it stale. **Verify against the actual filesystem/git state before writing a row** — this table has previously claimed things (a working CI pipeline, a `snapshotDir` config, a `pnpm run test` script) that turned out not to exist when checked.
 
 ## Architecture
 
@@ -112,7 +119,7 @@ When you finish implementing something in this table, update its row instead of 
 - Each class:
   - takes a Playwright `page` in its constructor and stores it as `this.page`
   - defines all locators as constructor properties, grouped with `//` comments by UI region (e.g. "Login Form Inputs Locators", "Carts locator", "footer")
-  - exposes action methods (`login`, `launchUrl`, `sortProducts`, etc.) that operate on those locators
+  - exposes action methods (e.g. `login`, `goto`, `getErrorMessage` on `LoginPage`; `selectSortOrder`, `addProductToCart`, `removeProductFromCart` on `InventoryPage`) that operate on those locators
   - Tests never call `page.locator(...)` directly — they go through the page object's named locator properties and methods.
 - Prefer role/testid-based locators (`getByRole`, `getByTestId`) over CSS selectors where the DOM supports it — matches saucedemo's `data-test` attributes and is less brittle. CSS locators (e.g. `.shopping_cart_badge`) are acceptable where no accessible role/testid exists.
 
@@ -125,13 +132,14 @@ When you finish implementing something in this table, update its row instead of 
   - `tests/e2e` => all end to end flow test (spans more than one page object or a full user journey)
   - `tests/api` => all api related test cases
 - placement rule: place a test in `tests/e2e` when it spans more than one page object or represents a full user journey; place it in `tests/ui` when it validates a single page in isolation.
-- spec filenames are just `<feature>.spec.js` — the `tests/ui` vs `tests/e2e` **directory** encodes whether it's a UI-isolation or full-journey test, not a `.ui.`/`.e2e.` segment in the filename. E.g. `tests/ui/login.spec.js`, `tests/e2e/inventory.spec.js`.
+- spec filenames are just `<feature>.spec.js` — the `tests/ui` vs `tests/e2e` **directory** encodes whether it's a UI-isolation or full-journey test, not a `.ui.`/`.e2e.` segment in the filename. E.g. `tests/ui/login.spec.js`.
+- **Current state**: `tests/ui/login.spec.js` (single page, correctly placed) and `tests/ui/inventory.spec.js` (spans `LoginPage` + `InventoryPage` via the `loginUser` fixture — per the placement rule above it arguably belongs in `tests/e2e/`, but it currently lives in `tests/ui/`). `tests/e2e/checkout.spec.js` exists but is empty. `tests/api/` doesn't exist.
 
 ### test-data
 
 - Lives under the project-root `test-data/` directory.
 - JSON files named `<pageName>-data.json` (single object of expected strings/URLs per page, e.g. `inventory-data.json`) or `<pageName>List-data.json` (array of row objects for per-item data-driven assertions, e.g. `productsList-data.json`).
-- `.js` files (e.g. `users-data.js`, `inventory-sort-data.js`) are used when the data needs structure/logic beyond plain JSON — e.g. `users-data.js` groups `valid.*` / `invalid.*` per test user, each with `username`, `password`, and (for invalid users) `errorMsg`; `inventory-sort-data.js` exports sort-case arrays paired with compare functions for data-driven sort tests.
+- `.js` files (e.g. `users-data.js`, `inventory-sort-data.js`, `login-page-data.js`) are used when the data needs structure/logic beyond plain JSON — e.g. `users-data.js` groups `valid.*` / `invalid.*` per test user, each with `username`, `password`, and (for invalid users) `errorMsg`; `inventory-sort-data.js` exports sort-case arrays paired with compare functions for data-driven sort tests; `login-page-data.js` exports a flat `loginData` object (`loginPageUrl`, `pageTitle`) for the login spec's assertions.
 - Import data into specs rather than hardcoding literals inline — see `tests/ui/login.spec.js` for the pattern (`import users from "../../test-data/users-data"`).
 - `docs/frameworks/03-test-data-strategy.md` describes a target `testCases`-nested shape for per-test input data once a page's JSON grows past shared constants — not yet adopted, adopt it incrementally per that doc's guidance rather than restructuring existing files speculatively.
 
@@ -148,50 +156,49 @@ When you finish implementing something in this table, update its row instead of 
 
 ### Visual regression testing
 
-- Snapshots live under the project-root `visual-baselines/` directory (`snapshotDir` in `playwright.config.js`), mirroring the spec path, e.g. `visual-baselines/ui/login.spec.js-snapshots/`.
-- Capture with `await expect(page).toHaveScreenshot("name.png")`; use `mask: [locator]` to hide dynamic content and `maxDiffPixelRatio`/`threshold` to tune sensitivity for flaky pixels.
-- **Snapshot filenames are platform-specific** (`*-chromium-win32.png` vs `*-chromium-linux.png`). A baseline captured on a developer's machine will never satisfy CI running on a different OS — do not try to generate the CI (Linux) baseline by running `--update-snapshots` locally on Windows/macOS. Use the `Update Visual Baselines` workflow instead (see below).
-- To (re)generate the Linux baseline CI checks against, manually trigger the **`Update Visual Baselines`** GitHub Actions workflow (`.github/workflows/update-visual-baselines.yml`, `workflow_dispatch` only — it never runs automatically) from the Actions tab. It runs `playwright test --update-snapshots` on the same `ubuntu-latest` runner CI uses and commits the resulting PNGs back to the branch. Baselines only change when this workflow is run on purpose — regular pushes/PRs never overwrite them.
-- See `docs/frameworks/06-visual-testing.md` for more detail, and `docs/frameworks/10-ci-fixes-node-runner-and-visual-baselines.md` for why this was needed.
+- **Not implemented.** No `snapshotDir` is configured in `playwright.config.js`, no `visual-baselines/` directory exists, and no spec calls `toHaveScreenshot()`. The section below describes the *target* design (also in `docs/frameworks/06-visual-testing.md`), not current behavior.
+- Target: snapshots under a project-root `visual-baselines/` directory (`snapshotDir` in `playwright.config.js`), mirroring the spec path, e.g. `visual-baselines/ui/login.spec.js-snapshots/`.
+- Target: capture with `await expect(page).toHaveScreenshot("name.png")`; use `mask: [locator]` to hide dynamic content and `maxDiffPixelRatio`/`threshold` to tune sensitivity for flaky pixels.
+- **Snapshot filenames are platform-specific** (`*-chromium-win32.png` vs `*-chromium-linux.png`) once this exists — a baseline captured on a developer's machine will never satisfy CI running on a different OS. Plan to generate/update Linux baselines via CI (e.g. a manually-triggered `workflow_dispatch` job), not locally on Windows/macOS — but note CI itself doesn't exist yet either (see [CI/CD Pipeline](#cicd-pipeline)).
+- See `docs/frameworks/06-visual-testing.md` for the target design detail. `docs/frameworks/10-ci-fixes-node-runner-and-visual-baselines.md` describes a Linux-baseline workflow as already built and working — it isn't; see the CI/CD Pipeline note above.
 
 ### docs
 
 - `docs/frameworks/` — two kinds of document, don't confuse them:
   - **`01`–`07`**: reference/target-architecture notes (framework blueprint, test-data strategy, UI-vs-E2E distinction, visual testing, learnings). Describe where the framework is _headed_, not necessarily what's implemented today — cross-check against [Project Status](#project-status).
-  - **`08`–`11`**: implementation/postmortem logs for work actually done — `08` is a point-in-time framework rating + phased roadmap, `09` documents the ESLint/Prettier Phase 1 setup (including a real bug it caught), `10`–`11` document specific CI incidents (Node runner deprecation, OS-specific visual baselines, push/PR trigger semantics, browser-install scope) and their fixes. These are historical records — don't edit them to "keep current," just add a new numbered doc for the next thing.
+  - **`08`–`11`**: framed as implementation/postmortem logs, but verify before trusting — `08` is a point-in-time framework rating + phased roadmap, `09` documents the ESLint/Prettier setup and **is accurate** (`eslint.config.mjs`/`.prettierrc.json` really exist and work). `10`–`11` describe specific CI incidents (Node runner deprecation, OS-specific visual baselines, push/PR trigger semantics, browser-install scope) and their fixes, but **no `.github/` directory exists anywhere in this repo's git history** — the CI they describe was never actually committed. Read `10`–`11` as design notes for CI to build, not history of CI that ran. Don't edit any of `08`–`11` to "keep current" — just add a new numbered doc for the next thing, and cross-check against [Project Status](#project-status) before citing them as fact.
 - `docs/test-cases/` — actual test case documentation for this repo (manual + automation test case lists).
 
 ### CI/CD Pipeline
 
-- GitHub Actions is configured and active: `.github/workflows/playwright.yml` runs on push/PR to `main`/`master` only (`qabranch` is currently a CI blind spot — see `docs/frameworks/11-ci-triggers-and-browser-install-explained.md` for the exact `push` vs `pull_request` branch-filter semantics and the planned fix).
-- Two jobs, gated in sequence: `lint` (ESLint + `format:check`) runs first; `test` (`needs: lint`) only runs if lint passes — installs Playwright browsers (currently all of them, not just chromium — also flagged in doc 11), runs `pnpm exec playwright test`, uploads `playwright-report/` as a build artifact.
-- `actions/checkout`, `actions/setup-node`, `actions/upload-artifact` are pinned to `@v7`. These drift forward over time (GitHub deprecates old Node runtimes the action majors depend on) — verify the real latest via `https://api.github.com/repos/<owner>/<repo>/releases/latest` before bumping, don't guess. See `docs/frameworks/10-ci-fixes-node-runner-and-visual-baselines.md`.
-- A second, **manually-triggered-only** workflow, `.github/workflows/update-visual-baselines.yml` (`workflow_dispatch`, no push/PR trigger), regenerates `visual-baselines/**` on the same `ubuntu-latest` runner as real CI and commits the result back. Run it from the Actions tab only after an intentional visual change — see [Visual regression testing](#visual-regression-testing).
-- Jenkins is planned as an additional/alternate runner but not yet set up.
+- **Not implemented.** There is no `.github/` directory anywhere in this repo's git history (verified via `git ls-files | grep github` and `git log --all -- .github` — both empty on every branch). No workflow runs on push or PR; lint, format, and tests are all run manually today (see [Commands](#commands)).
+- `docs/frameworks/09-eslint-prettier-setup.md`, `10-ci-fixes-node-runner-and-visual-baselines.md`, and `11-ci-triggers-and-browser-install-explained.md` read like implementation/postmortem logs describing a working two-job (`lint` → `test`) pipeline, a Node-runner deprecation fix, and a manually-triggered `update-visual-baselines.yml` workflow — **none of that is actually present in the repo.** Treat those docs as a target design/spec to implement from, not a record of what's running. (`09`'s claim that `eslint.config.mjs`/`.prettierrc.json` exist and work is accurate — that part checks out; it's specifically the CI/workflow claims in `10`–`11` that don't.)
+- Only `main` exists as a branch (no `qabranch`), both locally and on `origin`.
+- Jenkins, SonarCloud, and Allure reporting are also planned but not started (see `docs/todo.md`).
 
 ### playwright.config.js
 
 - `playwright.config.js` holds all global settings.
 - `baseURL` is `https://www.saucedemo.com/`.
 - `testIdAttribute` is `data-test` (matches saucedemo's DOM).
-- `snapshotDir` is `./visual-baselines` (see [Visual regression testing](#visual-regression-testing)).
+- `headless: false` — tests run **headed** (visible browser) by default locally, this isn't overridden per-environment.
 - reporter is `html`; `allure-report` not yet set up.
 - `trace` is `on-first-retry`.
 - Only the `chromium` project is enabled; `firefox`/`webkit`/mobile/branded-browser projects are present but commented out — don't uncomment them without checking with the user first, since it changes CI runtime/cost.
+- **No `snapshotDir` is configured** and there are no `toHaveScreenshot()` calls anywhere in `tests/` — visual regression testing (see below) is fully aspirational, not implemented. Don't assume `./visual-baselines` exists as a config value; it doesn't.
 
 ## Test users
 
-Defined in `test-data/users-data.js` (`valid.*` / `invalid.*`), all with password `secret_sauce` unless noted:
+Defined in `test-data/users-data.js` (`valid.*` / `invalid.*`), all with password `secret_sauce` unless noted. This is the actual current content — saucedemo.com also has `performance_glitch_user`, `error_user`, and `visual_user`, but they aren't defined in this file yet:
 
-| Username                  | Type    | Notes                                                                                                 |
-| ------------------------- | ------- | ----------------------------------------------------------------------------------------------------- |
-| `standard_user`           | valid   | Full access, no quirks                                                                                |
-| `performance_glitch_user` | valid   | Simulates slow page loads                                                                             |
-| `error_user`              | valid   | Triggers various UI errors                                                                            |
-| `visual_user`             | valid   | For visual regression tests                                                                           |
-| `locked_out_user`         | invalid | Blocked at login; expects `"Epic sadface: Sorry, this user has been locked out."`                     |
-| `problem_user`            | invalid | Various UI/rendering problems                                                                         |
-| `invalid_user`            | invalid | Wrong password; expects `"Epic sadface: Username and password do not match any user in this service"` |
+| Key               | Type    | Notes                                                                                                                       |
+| ------------------ | ------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `standard_user`    | valid   | Full access, no quirks                                                                                                       |
+| `locked_out_user`  | invalid | Blocked at login; expects `"Epic sadface: Sorry, this user has been locked out."`                                            |
+| `problem_user`     | invalid | `errorMsg` is currently an empty string in the data file — not filled in yet                                                |
+| `wrong_username`   | invalid | Valid password, invalid username; expects `"Epic sadface: Username and password do not match any user in this service"`     |
+| `wrong_password`   | invalid | Valid username (`standard_user`), invalid password; same error message as above                                             |
+| `wrong_both`       | invalid | Both invalid; same error message as above                                                                                    |
 
 ## Test cases naming
 
@@ -248,7 +255,8 @@ These follow general JS/TS industry convention (Playwright, Cypress, Airbnb/Goog
 - `.vscode/playwright.code-snippets` provides prefix snippets (`pw-test`, `pw-gb-role`, `pw-gb-testid`, `pw-locator`, `pw-spec`, etc.) for scaffolding new specs/locators consistently — see `.vscode/playwright-snippets.md` for the full list.
 - **GitHub Actions major-version pins go stale**: `actions/checkout`/`actions/setup-node`/`actions/upload-artifact` at old majors (e.g. `@v4`) get forced onto whatever Node runtime GitHub currently supports, which throws a "Node.js X is deprecated" warning once GitHub drops that runtime. Fix by bumping to the action's current major tag (verify via `https://api.github.com/repos/<owner>/<repo>/releases/latest`, don't guess the number) — don't pin exact patch versions, floating majors (`@v7`) are the convention these actions use.
 - **Import paths must match the filename exactly, including the `.utils`/`.page`/`.fixture` segment**: Node/Playwright's ESM resolver does not do partial or fuzzy filename matching. `import { CommonUtils } from "../utils/common"` will fail to resolve `utils/common.utils.js` — it must be `"../utils/common.utils"`. This silently breaks at run time (module-not-found), not at review time, so double-check relative import paths after moving/renaming a file.
-- **Visual regression baselines are OS-specific**: `toHaveScreenshot()` filenames embed the platform (`-win32.png`, `-linux.png`, `-darwin.png`). A baseline generated on a dev machine will always be "missing" on a CI runner with a different OS — this isn't flakiness, it's a different filename. Generate/update baselines on the same OS the assertion will run on (for this repo: via the manually-triggered `Update Visual Baselines` GitHub Actions workflow, not locally on Windows).
+- **Prose docs in this repo have described infrastructure that was never actually committed**: `docs/frameworks/10`–`11` and this file's CI/CD section previously described a working GitHub Actions pipeline and `snapshotDir` config in detail — neither exists (`git log --all -- .github` is empty, `playwright.config.js` has no `snapshotDir` key). Before citing a doc's claim about CI, config, or file layout as fact, verify it against the actual filesystem (`find`/`ls`) or git (`git ls-files`, `git log --all -- <path>`) — don't assume a confident, detailed writeup means the thing was actually built.
+- **Visual regression baselines are OS-specific**: `toHaveScreenshot()` filenames embed the platform (`-win32.png`, `-linux.png`, `-darwin.png`). A baseline generated on a dev machine will always be "missing" on a CI runner with a different OS — this isn't flakiness, it's a different filename. Once visual tests and CI exist for this repo (neither does yet — see [Project Status](#project-status)), generate/update baselines on the same OS the assertion will run on, not locally on Windows.
 
 ## Keeping instruction files in sync
 
