@@ -79,7 +79,7 @@ test.describe("Inventory Test @inventory", () => {
     expect(actualDescriptions).toEqual(expectedDescriptions);
   });
 
-  test("should add a product to the cart", async ({ loginUser, page }) => {
+  test("should add product to the cart", async ({ loginUser, page }) => {
     //arrange
     const product = inventoryData.productData.Backpack.name;
 
@@ -90,7 +90,8 @@ test.describe("Inventory Test @inventory", () => {
     await expect(inventoryPage.cartProductCount()).toHaveCount(1);
   });
 
-  test("should sort products name in descending alphabetical order (Z to A)", async ({
+  // sorting without data-driven approach
+  test("should sort products names in descending alphabetical order (Z to A)", async ({
     loginUser,
     page,
   }) => {
@@ -112,6 +113,7 @@ test.describe("Inventory Test @inventory", () => {
     expect(actualNames).toEqual(expectedNames);
   });
 
+  // sorting by data driven approach
   for (const { sortOrder, direction, compare } of priceSortCases) {
     test(`should sort products ${direction}`, async ({ loginUser, page }) => {
       // Get prices before applying sort

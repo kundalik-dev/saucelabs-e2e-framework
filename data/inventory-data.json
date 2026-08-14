@@ -1,6 +1,7 @@
 {
   "basicData": {
-    "title": "Products"
+    "title": "Products",
+    "pageUrl": "/inventory.html"
   },
   "productData": {
     "Backpack": {
