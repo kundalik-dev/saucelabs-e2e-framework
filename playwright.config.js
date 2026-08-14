@@ -23,19 +23,35 @@ export default defineConfig({
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry count: RETRIES from .env overrides the CI-only default. */
-  retries: process.env.RETRIES !== undefined ? Number(process.env.RETRIES) : process.env.CI ? 2 : 0,
+  retries:
+    process.env.RETRIES !== undefined
+      ? Number(process.env.RETRIES)
+      : process.env.CI
+        ? 2
+        : 0,
   /* Worker count: WORKERS from .env overrides the CI-only default. */
-  workers: process.env.WORKERS !== undefined ? Number(process.env.WORKERS) : process.env.CI ? 4 : undefined,
+  workers:
+    process.env.WORKERS !== undefined
+      ? Number(process.env.WORKERS)
+      : process.env.CI
+        ? 4
+        : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: "html",
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
-    /* Base URL to use in actions like `await page.goto('')`. */
-    baseURL: "https://www.saucedemo.com/",
+    /* Base URL to use in actions like `await page.goto('')`. BASE_URL from .env overrides the default. */
+    baseURL:
+      process.env.BASE_URL !== undefined
+        ? process.env.BASE_URL
+        : "https://www.saucedemo.com/",
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
-    headless: false,
+    headless:
+      process.env.HEADLESS !== undefined
+        ? process.env.HEADLESS === "true"
+        : true,
     testIdAttribute: "data-test",
     video: "on-first-retry",
     screenshot: "only-on-failure",

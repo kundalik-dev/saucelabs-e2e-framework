@@ -4,6 +4,7 @@
   "description": "E2E UI test automation framework for saucedemo.com using Playwright Test and the Page Object Model.",
   "main": "index.js",
   "scripts": {
+    "test": "pnpm playwright test",
     "report": "pnpm playwright show-report",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
