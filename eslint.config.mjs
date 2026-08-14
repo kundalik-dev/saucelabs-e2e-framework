@@ -29,9 +29,11 @@ export default [
     ...playwright.configs["flat/recommended"],
     rules: {
       ...playwright.configs["flat/recommended"].rules,
-      // Fixture params are often destructured only to trigger their side effect
-      // (e.g. `loginUser`) without reading the value — prefix with `_` to opt out.
-      "no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
+      // Test callback params are destructured Playwright fixtures — they're often
+      // requested only to trigger a fixture's side effect (e.g. `loginUser` logging
+      // in) without the test body ever reading the value. Skip arg-usage checking
+      // entirely in spec files so fixture names don't need an `_` prefix to stay.
+      "no-unused-vars": ["error", { args: "none" }],
     },
   },
   eslintConfigPrettier,

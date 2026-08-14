@@ -3,7 +3,10 @@ import LoginPage from "../../pages/login.page";
 import InventoryPage from "../../pages/inventory.page";
 import users from "../../test-data/users-data";
 import inventoryData from "../../test-data/inventory-data.json" with { type: "json" };
-import { priceSortCases } from "../../test-data/inventory-sort-data";
+import {
+  priceSortCases,
+  nameSortCases,
+} from "../../test-data/inventory-sort-data";
 import { CommonUtils } from "../../utils/common.utils";
 import { loginData } from "../../test-data/login-page-data";
 
@@ -57,7 +60,7 @@ test.describe("Inventory Tests @inventory", () => {
   });
 
   test("should display the correct product information", async ({
-    loginUser: _loginUser,
+    loginUser,
   }) => {
     const expectedProductInfo = Object.values(inventoryData.productData);
 
@@ -78,28 +81,33 @@ test.describe("Inventory Tests @inventory", () => {
     expect(actualDescriptions).toEqual(expectedDescriptions);
   });
 
-  test("should add product to the cart", async ({ _loginUser, _page }) => {
+  test("should add single product to the cart", async ({ loginUser, page }) => {
     //arrange
     const productName = inventoryData.productData.backpack.name;
 
     //act
     await inventoryPage.addProductToCart(productName);
 
-    //assert
+    //assert :- hard coded count as we are adding only one product to the cart
     await expect(inventoryPage.cartProductCount()).toHaveCount(1);
   });
 
   // sorting without data-driven approach
   test("should sort products names in descending alphabetical order (Z to A)", async ({
-    _loginUser,
-    _page,
+    loginUser,
+    page,
   }) => {
     //arrange
-    const sortOrder = inventoryData.sortOrder.name.z_a;
-    const productNames = await inventoryPage.getAllProductNames();
-    const expectedNames = [...productNames].sort((a, b) => b.localeCompare(a));
+    const user = users.valid.standardUser;
+
+    const sortOrder = nameSortCases[1].sortOrder;
+    const compareLogic = nameSortCases[1].compare;
 
     //act
+    await loginPage.login(user);
+    const productNames = await inventoryPage.getAllProductNames();
+    const expectedNames = [...productNames].sort(compareLogic);
+
     await inventoryPage.selectSortOrder(sortOrder);
 
     await expect(inventoryPage.getFirstProductName()).toHaveText(
@@ -114,7 +122,7 @@ test.describe("Inventory Tests @inventory", () => {
 
   // sorting by data driven approach
   for (const { sortOrder, direction, compare } of priceSortCases) {
-    test(`should sort products ${direction}`, async ({ _loginUser, _page }) => {
+    test(`should sort products ${direction}`, async ({ loginUser, page }) => {
       // Get prices before applying sort
       const initialPriceTexts = await inventoryPage.getAllProductPrices();
 
