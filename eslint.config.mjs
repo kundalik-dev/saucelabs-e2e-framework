@@ -27,6 +27,12 @@ export default [
   {
     files: ["tests/**/*.spec.js"],
     ...playwright.configs["flat/recommended"],
+    rules: {
+      ...playwright.configs["flat/recommended"].rules,
+      // Fixture params are often destructured only to trigger their side effect
+      // (e.g. `loginUser`) without reading the value — prefix with `_` to opt out.
+      "no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
+    },
   },
   eslintConfigPrettier,
 ];

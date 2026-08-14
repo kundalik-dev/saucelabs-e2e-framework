@@ -180,11 +180,11 @@ Each page object:
 
 Located in [`tests/`](tests), split by scope:
 
-| Folder      | Purpose                                                | Current specs                            |
-| ----------- | ------------------------------------------------------- | ----------------------------------------- |
-| `tests/ui`  | Validates a **single page** in isolation                | `login.spec.js`                           |
-| `tests/e2e` | Spans **multiple page objects** or a full user journey  | `inventory.spec.js`, `checkout.spec.js` (empty) |
-| `tests/api` | API-level tests                                          | doesn't exist yet                         |
+| Folder      | Purpose                                                | Current specs                                   |
+| ----------- | ------------------------------------------------------ | ----------------------------------------------- |
+| `tests/ui`  | Validates a **single page** in isolation               | `login.spec.js`                                 |
+| `tests/e2e` | Spans **multiple page objects** or a full user journey | `inventory.spec.js`, `checkout.spec.js` (empty) |
+| `tests/api` | API-level tests                                        | doesn't exist yet                               |
 
 Spec filenames are just `<feature>.spec.js` — the `tests/ui`/`tests/e2e` folder itself encodes UI-vs-E2E, not a `.ui.`/`.e2e.` suffix in the filename. Each spec instantiates the relevant page object(s) (directly, or via the `loginUser` fixture) and asserts with `expect` / `expect.soft`.
 
