@@ -98,13 +98,13 @@ test.describe("Inventory Tests @inventory", () => {
     page,
   }) => {
     //arrange
-    const user = users.valid.standardUser;
-
     const sortOrder = nameSortCases[1].sortOrder;
     const compareLogic = nameSortCases[1].compare;
+    console.log(
+      `Sorting products by: ${sortOrder} with compare logic: ${compareLogic}`
+    );
 
     //act
-    await loginPage.login(user);
     const productNames = await inventoryPage.getAllProductNames();
     const expectedNames = [...productNames].sort(compareLogic);
 

@@ -15,12 +15,12 @@ const nameSortCases = [
   {
     sortOrder: "az",
     direction: "Name(A to Z)",
-    compare: (a, b) => a.localCompare(b),
+    compare: (a, b) => a.localeCompare(b),
   },
   {
     sortOrder: "za",
     direction: "Name(Z to A)",
-    compare: (a, b) => b.localCompare(a),
+    compare: (a, b) => b.localeCompare(a),
   },
 ];
 
