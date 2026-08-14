@@ -4,11 +4,19 @@ import InventoryPage from "../pages/inventory.page";
 import users from "../data/users-data";
 import inventoryData from "../data/inventory-data.json" with { type: "json" };
 import { priceSortCases } from "../data/inventory-sort-data";
+import { CommonUtils } from "../utils/common";
 
+/** @type {LoginPage} */
 let loginPage;
+/** @type {InventoryPage} */
 let inventoryPage;
 
-test.describe("Inventory test", () => {
+test.describe("Inventory Test @inventory", () => {
+  test.beforeEach(async ({ page }) => {
+    loginPage = new LoginPage(page);
+    inventoryPage = new InventoryPage(page);
+  });
+
   test(
     "should navigate to the inventory page after login",
     { tag: ["@smoke", "@inventory"] },
@@ -17,22 +25,17 @@ test.describe("Inventory test", () => {
       const user = users.valid.standard_user;
       const inventory = inventoryData.basicData;
 
-      loginPage = new LoginPage(page);
-      inventoryPage = new InventoryPage(page);
-
       // Act
       await loginPage.goto("/");
       await loginPage.login(user);
 
       // Assert
-      await expect(inventoryPage.title_loc).toHaveText(inventory.title);
+      await expect(inventoryPage.pageTitle()).toHaveText(inventory.title);
     }
   );
 
   test("should display all available products", async ({ page }) => {
     // Arrange
-    loginPage = new LoginPage(page);
-    inventoryPage = new InventoryPage(page);
     const user = users.valid.standard_user;
     const expectedProductNames = Object.values(inventoryData.productData).map(
       (product) => product.name
@@ -52,18 +55,16 @@ test.describe("Inventory test", () => {
     expect(actProductNames).toEqual(expectedProductNames);
   });
 
-  test("should display the correct product information", async ({ page }) => {
-    loginPage = new LoginPage(page);
-    inventoryPage = new InventoryPage(page);
+  test("should display the correct product information", async ({
+    loginUser,
+    page,
+  }) => {
     const user = users.valid.standard_user;
     const expectedProducts = Object.values(inventoryData.productData);
 
     const expectedNames = expectedProducts.map((p) => p.name);
     const expectedPrices = expectedProducts.map((p) => p.price);
     const expectedDescriptions = expectedProducts.map((p) => p.description);
-
-    await loginPage.goto("/");
-    await loginPage.login(user);
 
     await expect(inventoryPage.getInventoryCount()).toHaveCount(
       expectedProducts.length
@@ -80,7 +81,6 @@ test.describe("Inventory test", () => {
 
   test("should add a product to the cart", async ({ loginUser, page }) => {
     //arrange
-    inventoryPage = new InventoryPage(page);
     const product = inventoryData.productData.Backpack.name;
 
     //act
@@ -95,7 +95,6 @@ test.describe("Inventory test", () => {
     page,
   }) => {
     //arrange
-    inventoryPage = new InventoryPage(page);
     const sortOrder = inventoryData.sortOrder.name.z_a;
     const productNames = await inventoryPage.getAllProductNames();
     const expectedNames = [...productNames].sort((a, b) => b.localeCompare(a));
@@ -114,11 +113,32 @@ test.describe("Inventory test", () => {
   });
 
   for (const { sortOrder, direction, compare } of priceSortCases) {
-    test(`should sort products in ${sortOrder} order`, async ({ page }) => {
-      inventoryPage = new InventoryPage(page);
+    test(`should sort products ${direction}`, async ({ loginUser, page }) => {
+      // Get prices before applying sort
+      const initialPriceTexts = await inventoryPage.getAllProductPrices();
 
-      const productPrice = inventoryPage.getAllProductPrices();
-      console.log(productPrice[0]);
+      // Convert "$29.99" → 29.99
+      const initialPrices = CommonUtils.formatPrices(initialPriceTexts);
+
+      // Create expected result without modifying initialPrices
+      const expectedPrices = [...initialPrices].sort(compare);
+
+      // Apply sorting on the UI
+      await inventoryPage.selectSortOrder(sortOrder);
+
+      // Verify the first product has the expected price
+      await expect(inventoryPage.getFirstProductPrice()).toHaveText(
+        `$${expectedPrices[0]}`
+      );
+
+      // Get prices after applying sort
+      const sortedPriceTexts = await inventoryPage.getAllProductPrices();
+
+      // Convert UI price strings to numbers
+      const actualPrices = CommonUtils.formatPrices(sortedPriceTexts);
+
+      // Verify complete sorted list
+      expect(actualPrices).toEqual(expectedPrices);
     });
   }
 });

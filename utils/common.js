@@ -1,8 +1,9 @@
-// format price
-const formatPriceToNumber = (price) => {
-  //$29.10 => 29.10
-};
+export class CommonUtils {
+  static formatPrice(price) {
+    return Number(price.replace("$", ""));
+  }
 
-const formatPriceToString = (price) => {
-  // 29.10 => $29.10
-};
+  static formatPrices(prices) {
+    return prices.map((price) => this.formatPrice(price));
+  }
+}

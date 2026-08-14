@@ -44,10 +44,5 @@ test.describe("Auth @login", () => {
     await expect(loginPage.errorMsg).toHaveText(user.errorMsg);
   });
 
-  // data driven test for wrong username & password
-  //   for (const username in users.invalid.wrong_both) {
-  //     test(`should display error when invalid ${username} is entered`, async ({
-  //       page,
-  //     }) => {});
-  //   }
+   
 });

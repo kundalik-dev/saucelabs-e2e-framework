@@ -22,6 +22,10 @@ class InventoryPage {
     //footer Locators
   }
 
+  pageTitle() {
+    return this.title_loc;
+  }
+
   async getAllProductNames() {
     return await this.productNames_loc.allTextContents();
   }
@@ -30,6 +34,9 @@ class InventoryPage {
     return this.productNames_loc.first();
   }
 
+  getFirstProductPrice() {
+    return this.productPrices_loc.first();
+  }
   async getAllProductPrices() {
     return await this.productPrices_loc.allTextContents();
   }

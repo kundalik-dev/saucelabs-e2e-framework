@@ -2,6 +2,8 @@ class LoginPage {
   /** @param {import('@playwright/test').Page} page */
   constructor(page) {
     this.page = page;
+
+    // login locators
     this.username = this.page.getByRole("textbox", { name: "Username" });
     this.password = this.page.getByRole("textbox", { name: "Password" });
     this.loginButton = this.page.getByRole("button", { name: "Login" });
