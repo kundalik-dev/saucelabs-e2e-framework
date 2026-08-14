@@ -5,8 +5,6 @@
 ![pnpm](https://img.shields.io/badge/pnpm-11.18-F69220?logo=pnpm&logoColor=white)
 ![License](https://img.shields.io/badge/License-ISC-blue.svg)
 
-> **CI status**: no GitHub Actions workflow exists yet in this repo (no `.github/` directory) — the badge that used to live here pointed at a workflow that isn't set up. See [Roadmap](#roadmap).
-
 An end-to-end UI test automation framework for **[saucedemo.com](https://www.saucedemo.com/)**, built with [Playwright Test](https://playwright.dev/) in JavaScript. The framework follows the **Page Object Model (POM)** and is driven by external, decoupled test data (`JSON` / `JS`), keeping test logic, page interactions, and test data cleanly separated.
 
 ---
@@ -31,7 +29,6 @@ An end-to-end UI test automation framework for **[saucedemo.com](https://www.sau
   - [Coding Conventions](#coding-conventions)
   - [CI/CD](#cicd)
   - [Roadmap](#roadmap)
-  - [Contributing](#contributing)
   - [License](#license)
 
 ---
@@ -85,8 +82,6 @@ An end-to-end UI test automation framework for **[saucedemo.com](https://www.sau
 └── CLAUDE.md / AGENTS.md / copilot-instructions.md   # AI-assistant & contributor guidelines
 ```
 
-Not yet present, despite being referenced elsewhere as target architecture: `.github/workflows/` (no CI configured at all), `visual-baselines/` (no visual regression tests written yet), `tests/api/`, `pages/cart.page.js`, `pages/checkout.page.js`, `pages/payment.page.js`. See [Roadmap](#roadmap).
-
 ---
 
 ## Prerequisites
@@ -114,11 +109,10 @@ pnpm exec playwright install --with-deps
 
 ## Running Tests
 
-> There's no `pnpm run test` script in `package.json` yet — run Playwright directly via `pnpm exec playwright test` (or add the alias yourself).
-
 ```bash
-# Run the full suite (chromium only — other browsers are commented out in playwright.config.js)
+# Run the full suite
 pnpm exec playwright test
+pnpm run test
 
 # Run a single spec file
 pnpm exec playwright test tests/ui/login.spec.js
@@ -184,7 +178,6 @@ Located in [`tests/`](tests), split by scope:
 | ----------- | ------------------------------------------------------ | ----------------------------------------------- |
 | `tests/ui`  | Validates a **single page** in isolation               | `login.spec.js`                                 |
 | `tests/e2e` | Spans **multiple page objects** or a full user journey | `inventory.spec.js`, `checkout.spec.js` (empty) |
-| `tests/api` | API-level tests                                        | doesn't exist yet                               |
 
 Spec filenames are just `<feature>.spec.js` — the `tests/ui`/`tests/e2e` folder itself encodes UI-vs-E2E, not a `.ui.`/`.e2e.` suffix in the filename. Each spec instantiates the relevant page object(s) (directly, or via the `loginUser` fixture) and asserts with `expect` / `expect.soft`.
 
@@ -239,19 +232,16 @@ Full contributor/AI-agent guidelines live in [`CLAUDE.md`](CLAUDE.md) / [`AGENTS
 
 ## CI/CD
 
-**Not set up yet.** There is no `.github/` directory in this repo, so no GitHub Actions workflow currently runs on push or PR — lint and tests are run manually (see [Running Tests](#running-tests)).
-
-`docs/frameworks/09-11` describe a target/planned setup (a `lint` → `test` two-job pipeline, action versions pinned to their current majors, plus a manually-triggered `update-visual-baselines.yml` workflow) — treat those as design notes for CI to be built, not a description of what's running today. A Jenkins pipeline is also planned (see [Roadmap](#roadmap)).
+**Not set up yet.** GitHub Actions workflow currently runs on push — lint and tests are run manually (see [Running Tests](#running-tests)).
 
 ---
 
 ## Roadmap
 
-- [ ] Set up GitHub Actions CI from scratch — no `.github/workflows/` exists yet (a `lint` → `test` pipeline is designed in `docs/frameworks/09-11` but never implemented)
-- [ ] Add a `pnpm run test` script to `package.json` — currently there's no alias, use `pnpm exec playwright test` directly
+- [x] Set up GitHub Actions CI from scratch — no `.github/workflows/` exists yet (a `lint` → `test` pipeline is designed in `docs/frameworks/09-11` but never implemented)
+- [x] Add a `pnpm run test` script to `package.json` — currently there's no alias, use `pnpm exec playwright test` directly
 - [ ] `global-setup.js` to log in once and persist an authenticated `storageState.json`, so tests that don't test login itself can skip the UI login step
 - [ ] Complete `cart.page.js`, `checkout.page.js`, `payment.page.js` and their corresponding `tests/e2e` specs (`checkout.spec.js` exists but is empty)
-- [ ] `tests/api` coverage — directory doesn't exist yet
 - [ ] Visual regression testing — no `snapshotDir` configured, no `toHaveScreenshot()` calls, no `visual-baselines/` directory yet
 - [ ] Fix pre-existing `no-unused-vars` lint errors in `tests/e2e/inventory.spec.js` (unused `page`/`loginUser` fixture args) — `pnpm run lint` currently fails
 - [ ] CSV-driven data-source support
@@ -260,15 +250,6 @@ Full contributor/AI-agent guidelines live in [`CLAUDE.md`](CLAUDE.md) / [`AGENTS
 - [ ] SonarCloud for code quality (see `docs/todo.md`)
 
 > ESLint + Prettier config, the `login.fixture.js` `loginUser` fixture, and the `test-data`/`tests/ui`+`tests/e2e`/`fixtures`/`utils` folder structure are already done.
-
----
-
-## Contributing
-
-1. Only `main` exists as a branch today (no `qabranch` yet, despite being referenced in some docs as a planned flow) — branch off `main` for new work.
-2. Follow the [naming](#test-case-naming-convention) and [coding](#coding-conventions) conventions above.
-3. Run `pnpm run lint` and `pnpm run format:check` (or `lint:fix`/`format` to auto-fix) manually — there's no CI to gate on these yet.
-4. Ensure `pnpm exec playwright test` passes locally before opening a PR.
 
 ---
 
