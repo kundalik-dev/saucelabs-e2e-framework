@@ -1,5 +1,4 @@
 import { test, expect } from "../../fixtures/login.fixture";
-import LoginPage from "../../pages/login.page";
 import InventoryPage from "../../pages/inventory.page";
 import users from "../../test-data/users-data";
 import inventoryData from "../../test-data/inventory-data.json" with { type: "json" };
@@ -10,58 +9,34 @@ import {
 import { CommonUtils } from "../../utils/common.utils";
 import { loginData } from "../../test-data/login-page-data";
 
-/** @type {LoginPage} */
-let loginPage;
-/** @type {InventoryPage} */
-let inventoryPage;
-
-test.describe("Inventory Tests @inventory", () => {
-  test.beforeEach(async ({ page }) => {
-    loginPage = new LoginPage(page);
-    inventoryPage = new InventoryPage(page);
-
-    await loginPage.goto(loginData.loginPageUrl);
-  });
-
-  test(
-    "should navigate to the inventory page after valid login",
-    { tag: ["@smoke", "@inventory"] },
-    async ({}) => {
-      // Arrange
-      const user = users.valid.standardUser;
-      const inventory = inventoryData.basicData;
-
-      // Act
-      await loginPage.login(user);
-
-      // Assert
-      await expect(inventoryPage.pageTitle()).toHaveText(inventory.title);
-    }
-  );
-
-  test("should display all available products", async ({}) => {
+test.describe("Inventory", () => {
+  test("should display all available products", async ({
+    loginFixture,
+    page,
+  }) => {
     // Arrange
+    const inventoryPage = new InventoryPage(page);
     const user = users.valid.standardUser;
+
+    // Act
     const expectedNames = Object.values(inventoryData.productData).map(
       (product) => product.name
     );
-
-    // Act
-    await loginPage.login(user);
-
-    // assert products counts first: as this auto waits
+    // check products count - as this has auto waits
     await expect(inventoryPage.getInventoryCount).toHaveCount(
       expectedNames.length
     );
 
-    // Assert count first to trigger auto-waiting before fetching the all products names.
+    // Get all products names
     const actualNames = await inventoryPage.getAllProductNames();
     expect(actualNames).toEqual(expectedNames);
   });
 
   test("should display the correct product information", async ({
-    loginUser,
+    loginFixture,
+    page,
   }) => {
+    const inventoryPage = new InventoryPage(page);
     const expectedProductInfo = Object.values(inventoryData.productData);
 
     const expectedNames = expectedProductInfo.map((p) => p.name);
@@ -81,8 +56,12 @@ test.describe("Inventory Tests @inventory", () => {
     expect(actualDescriptions).toEqual(expectedDescriptions);
   });
 
-  test("should add single product to the cart", async ({ loginUser, page }) => {
+  test("should add single product to the cart", async ({
+    loginFixture,
+    page,
+  }) => {
     //arrange
+    const inventoryPage = new InventoryPage(page);
     const productName = inventoryData.productData.backpack.name;
 
     //act
@@ -94,10 +73,12 @@ test.describe("Inventory Tests @inventory", () => {
 
   // sorting without data-driven approach
   test("should sort products names in descending alphabetical order (Z to A)", async ({
-    loginUser,
+    loginFixture,
     page,
   }) => {
     //arrange
+    const inventoryPage = new InventoryPage(page);
+
     const sortOrder = nameSortCases[1].sortOrder;
     const compareLogic = nameSortCases[1].compare;
     console.log(
@@ -122,7 +103,13 @@ test.describe("Inventory Tests @inventory", () => {
 
   // sorting by data driven approach
   for (const { sortOrder, direction, compare } of priceSortCases) {
-    test(`should sort products ${direction}`, async ({ loginUser, page }) => {
+    test(`should sort products ${direction}`, async ({
+      loginFixture,
+      page,
+    }) => {
+      // Arrange
+      const inventoryPage = new InventoryPage(page);
+
       // Get prices before applying sort
       const initialPriceTexts = await inventoryPage.getAllProductPrices();
 
