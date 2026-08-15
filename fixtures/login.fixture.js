@@ -19,7 +19,7 @@ const test = base.extend({
     await use();
 
     // TEARDOWN
-    console.log("closing loginUser fixture");
+    console.log("closing loginFixture");
   },
 });
 
