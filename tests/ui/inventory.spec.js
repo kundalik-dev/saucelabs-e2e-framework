@@ -1,13 +1,11 @@
 import { test, expect } from "../../fixtures/login.fixture";
 import InventoryPage from "../../pages/inventory.page";
-import users from "../../test-data/users-data";
 import inventoryData from "../../test-data/inventory-data.json" with { type: "json" };
 import {
   priceSortCases,
   nameSortCases,
 } from "../../test-data/inventory-sort-data";
 import { CommonUtils } from "../../utils/common.utils";
-import { loginData } from "../../test-data/login-page-data";
 
 test.describe("Inventory", () => {
   test("should display all available products", async ({
@@ -16,7 +14,6 @@ test.describe("Inventory", () => {
   }) => {
     // Arrange
     const inventoryPage = new InventoryPage(page);
-    const user = users.valid.standardUser;
 
     // Act
     const expectedNames = Object.values(inventoryData.productData).map(
