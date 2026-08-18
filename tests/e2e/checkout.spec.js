@@ -18,8 +18,8 @@ async function goToPaymentPage({ inventoryPage, cartPage, checkoutPage }) {
   await checkoutPage.continueToOverview(checkoutData.validCustomer);
 }
 
-test.describe("Checkout @e2e", () => {
-  test("should complete order for a single product (E2E-01)", async ({
+test.describe("Checkout @e2e - happy path", () => {
+  test("should complete order for a single product (E2E-01) @smoke @critical", async ({
     inventoryPage,
     cartPage,
     checkoutPage,
@@ -50,7 +50,7 @@ test.describe("Checkout @e2e", () => {
     );
   });
 
-  test("should complete order for multiple products (E2E-02)", async ({
+  test("should complete order for multiple products (E2E-02) @critical", async ({
     inventoryPage,
     cartPage,
     checkoutPage,
@@ -83,7 +83,7 @@ test.describe("Checkout @e2e", () => {
     );
   });
 
-  test("should complete order for the remaining product after removing an item in the cart (E2E-03)", async ({
+  test("should complete order for the remaining product after removing an item in the cart (E2E-03) @regression", async ({
     inventoryPage,
     cartPage,
     checkoutPage,
@@ -122,7 +122,7 @@ test.describe("Checkout @e2e", () => {
     );
   });
 
-  test("should complete order for the newly selected product after changing product selection (E2E-04)", async ({
+  test("should complete order for the newly selected product after changing product selection (E2E-04) @regression", async ({
     inventoryPage,
     cartPage,
     checkoutPage,
@@ -156,7 +156,7 @@ test.describe("Checkout @e2e", () => {
     );
   });
 
-  test("should purchase both products when continuing shopping before checkout (E2E-05)", async ({
+  test("should purchase both products when continuing shopping before checkout (E2E-05) @regression", async ({
     inventoryPage,
     cartPage,
     checkoutPage,
@@ -188,7 +188,7 @@ test.describe("Checkout @e2e", () => {
     );
   });
 
-  test("should keep the cart intact when navigating back from the checkout information page (E2E-06)", async ({
+  test("should keep the cart intact when navigating back from the checkout information page (E2E-06) @regression", async ({
     inventoryPage,
     cartPage,
     checkoutPage,
@@ -227,7 +227,7 @@ test.describe("Checkout @e2e", () => {
     );
   });
 
-  test("should resume and complete the purchase after cancelling checkout (E2E-07)", async ({
+  test("should resume and complete the purchase after cancelling checkout (E2E-07) @regression", async ({
     inventoryPage,
     cartPage,
     checkoutPage,
@@ -257,7 +257,7 @@ test.describe("Checkout @e2e", () => {
     );
   });
 
-  test("should complete the purchase of the top sorted product (E2E-08)", async ({
+  test("should complete the purchase of the top sorted product (E2E-08) @regression", async ({
     inventoryPage,
     cartPage,
     checkoutPage,
@@ -293,7 +293,7 @@ test.describe("Checkout @e2e - anonymous users", () => {
    * session, matching the pattern in tests/e2e/auth.spec.js. */
   test.use({ storageState: { cookies: [], origins: [] } });
 
-  test("should prevent a locked-out user from entering the purchase flow (E2E-09)", async ({
+  test("should prevent a locked-out user from entering the purchase flow (E2E-09) @regression", async ({
     loginPage,
     page,
   }) => {
@@ -308,7 +308,7 @@ test.describe("Checkout @e2e - anonymous users", () => {
     await expect(page).not.toHaveURL(/inventory\.html/);
   });
 
-  test("should hit the known checkout information defect when purchasing as problem_user (E2E-12)", async ({
+  test("should hit the known checkout information defect when purchasing as problem_user (E2E-12) @regression", async ({
     loginPage,
     page,
   }) => {
@@ -337,7 +337,7 @@ test.describe("Checkout @e2e - anonymous users", () => {
 });
 
 test.describe("Checkout @e2e - session behavior", () => {
-  test("should keep the cart contents after logging out and back in mid-shopping (E2E-10)", async ({
+  test("should keep the cart contents after logging out and back in mid-shopping (E2E-10) @regression", async ({
     inventoryPage,
     page,
   }) => {
@@ -357,7 +357,7 @@ test.describe("Checkout @e2e - session behavior", () => {
     await expect(inventoryPage.cartProductCount()).toHaveText("1");
   });
 
-  test("should keep the purchase flow consistent across browser refreshes (E2E-11)", async ({
+  test("should keep the purchase flow consistent across browser refreshes (E2E-11) @regression", async ({
     inventoryPage,
     cartPage,
     checkoutPage,
@@ -394,7 +394,7 @@ test.describe("Checkout @e2e - session behavior", () => {
     );
   });
 
-  test("should purchase the final cart contents after modifying the cart at the checkout stage (E2E-13)", async ({
+  test("should purchase the final cart contents after modifying the cart at the checkout stage (E2E-13) @regression", async ({
     inventoryPage,
     cartPage,
     checkoutPage,
@@ -432,7 +432,7 @@ test.describe("Checkout @e2e - session behavior", () => {
     );
   });
 
-  test("should complete two sequential purchases (E2E-14)", async ({
+  test("should complete two sequential purchases (E2E-14) @regression", async ({
     inventoryPage,
     cartPage,
     checkoutPage,
@@ -464,7 +464,7 @@ test.describe("Checkout @e2e - session behavior", () => {
     );
   });
 
-  test("should complete the full customer journey from browsing to logout (E2E-15)", async ({
+  test("should complete the full customer journey from browsing to logout (E2E-15) @critical", async ({
     inventoryPage,
     cartPage,
     checkoutPage,
