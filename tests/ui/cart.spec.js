@@ -1,6 +1,6 @@
 import { test, expect } from "../../fixtures/login.fixture";
 import InventoryPage from "../../pages/inventory.page";
-import inventoryData from "../../test-data/inventory-data.json" with { type: "json" };
+import inventoryData from "../../test-data/inventory.data.json" with { type: "json" };
 
 test.describe("Cart", () => {
   test("should add single product to the cart", async ({
@@ -16,5 +16,9 @@ test.describe("Cart", () => {
 
     //assert :- hard coded count as we are adding only one product to the cart
     await expect(inventoryPage.cartProductCount()).toHaveCount(1);
+  });
+
+  test("Should display the correct product details on cart page", async ({ page }) => {
+    
   });
 });
