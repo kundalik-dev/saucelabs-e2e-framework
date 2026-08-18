@@ -60,8 +60,20 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
+      /* Generates auth/storageState.json by logging in once via the UI.
+       * Runs before "chromium" (see its `dependencies` below) so specs that
+       * opt into storageState via `test.use({ storageState: ... })` always
+       * have a fresh session file, instead of relying on someone running
+       * tests/auth/auth.setup.js manually first. */
+      name: "setup",
+      testMatch: /.*\.setup\.js/,
+      use: { ...devices["Desktop Chrome"] },
+    },
+
+    {
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
+      dependencies: ["setup"],
     },
 
     // {

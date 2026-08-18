@@ -1,5 +1,4 @@
-import { test, expect } from "../../fixtures/login.fixture";
-import InventoryPage from "../../pages/inventory.page";
+import { test, expect } from "../../fixtures/inventory.fixture";
 import inventoryData from "../../test-data/inventory-page.data.json" with { type: "json" };
 import {
   priceSortCases,
@@ -8,11 +7,11 @@ import {
 import { CommonUtils } from "../../utils/common.utils";
 
 test.describe("Inventory", () => {
+  test.use({ storageState: "./auth/storageState.json" });
+
   test("should display the correct product information", async ({
-    loginFixture,
-    page,
+    inventoryPage,
   }) => {
-    const inventoryPage = new InventoryPage(page);
     const expectedProductInfo = Object.values(inventoryData.productData);
 
     const expectedNames = expectedProductInfo.map((p) => p.name);
@@ -32,12 +31,8 @@ test.describe("Inventory", () => {
     expect(actualDescriptions).toEqual(expectedDescriptions);
   });
 
-  test("should add single product to the cart", async ({
-    loginFixture,
-    page,
-  }) => {
+  test("should add single product to the cart", async ({ inventoryPage }) => {
     //arrange
-    const inventoryPage = new InventoryPage(page);
     const productName = inventoryData.productData.backpack.name;
 
     //act
@@ -48,11 +43,8 @@ test.describe("Inventory", () => {
   });
 
   test("Should toggle button text from 'Add to cart' to 'Remove' when a product is added and removed", async ({
-    loginFixture,
-    page,
+    inventoryPage,
   }) => {
-    const inventoryPage = new InventoryPage(page);
-
     const productName = inventoryData.productData.backpack.name;
     const addButtonText = inventoryData.cart.addCartBtnText;
     const removeButtonText = inventoryData.cart.removeCartBtnText;
@@ -76,12 +68,9 @@ test.describe("Inventory", () => {
 
   // sorting without data-driven approach
   test("should sort products names in descending alphabetical order (Z to A)", async ({
-    loginFixture,
-    page,
+    inventoryPage,
   }) => {
     //arrange
-    const inventoryPage = new InventoryPage(page);
-
     const sortOrder = nameSortCases[1].sortOrder;
     const compareLogic = nameSortCases[1].compare;
     // console.log(
@@ -106,13 +95,8 @@ test.describe("Inventory", () => {
 
   // sorting by data driven approach
   for (const { sortOrder, direction, compare } of priceSortCases) {
-    test(`should sort products ${direction}`, async ({
-      loginFixture,
-      page,
-    }) => {
+    test(`should sort products ${direction}`, async ({ inventoryPage }) => {
       // Arrange
-      const inventoryPage = new InventoryPage(page);
-
       // Get prices before applying sort
       const initialPriceTexts = await inventoryPage.getAllProductPrices();
 
