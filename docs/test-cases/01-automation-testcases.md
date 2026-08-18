@@ -14,8 +14,8 @@
 
 ## E2E test cases
 
-- should prevent access to the inventory page when the user is not logged in
-- should redirect to the login page after an explicit user logout
+- should prevent access to the inventory page when the user is not logged in ✅
+- should redirect to the login page after an explicit user logout ✅
 
 # 2. Inventory page test cases
 
@@ -97,3 +97,25 @@
 - should reach the order complete page after finishing the checkout overview
 - should completely clear the shopping cart badge count after order completion
 - should navigate to the inventory page when clicking the 'Back Home' button
+
+---
+
+# E2E test cases
+
+| ID     | E2E Scenario                                               | Flow                                                                                                                                   | Expected Result                                        |
+| ------ | ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| E2E-01 | Successful single-product purchase                         | Login → Select product → Add to cart → Checkout → Enter details → Finish                                                               | Order successfully placed                              |
+| E2E-02 | Successful multi-product purchase                          | Login → Add 2+ products → Cart → Checkout → Finish                                                                                     | All selected products purchased successfully           |
+| E2E-03 | Purchase after removing an item                            | Login → Add multiple products → Cart → Remove one → Checkout → Finish                                                                  | Only remaining product is purchased                    |
+| E2E-04 | Purchase after changing product selection                  | Login → Add product A → Remove A → Add product B → Checkout → Finish                                                                   | Product B is successfully purchased                    |
+| E2E-05 | Continue shopping before checkout                          | Login → Add product → Cart → Continue Shopping → Add another product → Checkout → Finish                                               | Both products are purchased                            |
+| E2E-06 | Cart persistence through checkout                          | Login → Add product → Cart → Checkout → Back/Cancel → Cart → Checkout → Finish                                                         | Cart maintains the expected product                    |
+| E2E-07 | Cancel checkout and resume purchase                        | Login → Add product → Cart → Checkout → Cancel → Cart → Checkout → Finish                                                              | Purchase completes successfully                        |
+| E2E-08 | Complete purchase with product sorting                     | Login → Sort products → Select product → Add to cart → Checkout → Finish                                                               | Purchase completes successfully                        |
+| E2E-09 | Locked-out user purchase attempt                           | Login with locked user → Attempt authentication                                                                                        | User cannot enter purchase flow                        |
+| E2E-10 | Session logout during shopping                             | Login → Add product → Logout → Login again → Cart/Products                                                                             | User can resume according to expected session behavior |
+| E2E-11 | End-to-end purchase with browser refreshes                 | Login → Add product → Cart → Refresh → Checkout → Refresh → Finish                                                                     | Purchase flow remains consistent                       |
+| E2E-12 | Complete purchase using different user types               | Login with supported user → Add product → Checkout → Finish                                                                            | Flow behaves according to user's configured behavior   |
+| E2E-13 | Purchase workflow with cart modification at checkout stage | Login → Add multiple products → Checkout → Return to cart → Modify cart → Checkout → Finish                                            | Final cart contents are purchased                      |
+| E2E-14 | Multiple sequential purchases                              | Login → Purchase product A → Return to products → Purchase product B                                                                   | Both purchase workflows complete successfully          |
+| E2E-15 | Full customer journey                                      | Login → Browse products → View product → Add products → Modify cart → Checkout → Verify order completion → Return to products → Logout | Complete customer journey succeeds                     |

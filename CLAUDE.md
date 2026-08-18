@@ -52,7 +52,7 @@ playwright.config.js   # Global Playwright config
 Current implementation:
 
 - `pages/login.page.js` — implemented
-- `pages/inventory.page.js` — implemented; also exposes cart-related helpers (`addProductToCart`, `removeProductFromCart`, `cartProductCount`, `productButton`, `openCart`)
+- `pages/inventory.page.js` — implemented; also exposes cart-related helpers (`addProductToCart`, `removeProductFromCart`, `cartProductCount`, `productButton`, `openCart`) and `logout` (opens the header menu and clicks the logout link)
 - `pages/cart.page.js` — implemented; exposes `pageTitle`, `getCartItemCount`, `getAllProductNames`, `getAllProductPrices`, `getAllProductDescriptions`, `productQuantity`, `removeProductFromCart`, `continueShoppingButton`, `checkoutButton`, `checkout`
 - `pages/checkout.page.js` — implemented (checkout-step-one / "Checkout: Your Information"); exposes `pageTitle`, `fillInformation`, `continueToOverview`, `cancel`, `getErrorMessage`
 - `pages/payment.page.js` — implemented (checkout-step-two / "Checkout: Overview"); exposes `pageTitle`, `getCartItemCount`, `getAllProductNames`, `getAllProductPrices`, `getAllProductDescriptions`, `productQuantity`, `paymentInformation`, `shippingInformation`, `itemTotal`, `tax`, `total`, `finish`, `cancel`
@@ -62,6 +62,7 @@ Current implementation:
 - `tests/ui/cart.spec.js` — implemented; authenticated via `auth.fixture`. `"Cart"` describe block adds a product via `InventoryPage`; `"Cart page"` describe block drives `InventoryPage.openCart()` then asserts against `CartPage` (title, item names/prices, quantity, Continue Shopping/Checkout buttons)
 - `tests/ui/payment.spec.js` — implemented; authenticated via `auth.fixture`. Drives `InventoryPage` → `CartPage.checkout()` → `CheckoutPage.continueToOverview()` to reach the overview page, then asserts against `PaymentPage` (item list, shipping/payment info, currency formatting). The floating-point item-total defect case uses `test.fail()` to document a known Sauce Demo bug
 - `tests/ui/checkout-complete.spec.js` — implemented; authenticated via `auth.fixture`. A shared `test.beforeEach` drives the full journey through `PaymentPage.finish()`, then each test asserts one piece of `CheckoutCompletePage` (title, icon, heading, message, Back Home button)
+- `tests/e2e/auth.spec.js` — implemented; imports `auth.fixture` (authenticated by default) so the logout test can use `inventoryPage` directly. The `"unauthenticated access"` nested describe overrides `storageState` to an empty session (`test.use({ storageState: { cookies: [], origins: [] } })`) for the one test that needs to start signed out
 - `tests/auth/auth.setup.js` — implemented; logs in as `standard_user` and writes `auth/storageState.json`. Wired as the `setup` project in `playwright.config.js`, which `chromium` declares via `dependencies: ["setup"]`
 - `tests/e2e/checkout.spec.js` — empty
 - `fixtures/pages.fixture.js` — implemented; page object fixtures only (`loginPage`, `inventoryPage`, `cartPage`, `checkoutPage`, `paymentPage`, `checkoutCompletePage`), no authentication. `cartPage`, `checkoutPage`, `paymentPage`, and `checkoutCompletePage` do not `goto()` — each is a click-through page reached from the previous step (`inventoryPage.openCart()` → `cartPage.checkout()` → `checkoutPage.continueToOverview()` → `paymentPage.finish()`)

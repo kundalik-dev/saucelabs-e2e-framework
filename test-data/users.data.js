@@ -35,6 +35,10 @@ const users = {
         "Epic sadface: Username and password do not match any user in this service",
     },
   },
+  unAuthorizedAccess: {
+    errorMsg:
+      "Epic sadface: You can only access '${inventoryData.basicData.pageUrl}' when you are logged in.",
+  },
 };
 
 export default users;

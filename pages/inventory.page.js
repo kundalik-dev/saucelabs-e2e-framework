@@ -20,6 +20,10 @@ class InventoryPage {
 
     // sort locator
     this.sortDropdownLoc = this.page.getByTestId("product-sort-container");
+
+    // menu locator
+    this.menuBtnLoc = this.page.getByTestId("open-menu");
+    this.logoutLinkLoc = this.page.getByTestId("logout-sidebar-link");
   }
 
   async goto(pageUrl) {
@@ -85,6 +89,12 @@ class InventoryPage {
 
   async selectSortOrder(sortOrder) {
     await this.sortDropdownLoc.selectOption({ value: sortOrder });
+  }
+
+  // opens the header hamburger menu and logs out, landing back on the login page
+  async logout() {
+    await this.menuBtnLoc.click();
+    await this.logoutLinkLoc.click();
   }
 }
 
