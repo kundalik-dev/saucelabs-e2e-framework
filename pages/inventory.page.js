@@ -59,6 +59,7 @@ class InventoryPage {
   async addProductToCart(productName) {
     await this.inventoryItemsLoc
       .filter({ hasText: productName })
+      .first()
       .getByRole("button", { name: "Add to cart" })
       .click();
   }
