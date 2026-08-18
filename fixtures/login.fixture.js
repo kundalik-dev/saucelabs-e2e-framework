@@ -1,8 +1,8 @@
 import { test as base, expect } from "@playwright/test";
 import LoginPage from "../pages/login.page";
-import users from "../test-data/users-data";
-import inventory from "../test-data/inventory-data.json" with { type: "json" };
-import { loginData } from "../test-data/login-page-data";
+import users from "../test-data/users.data";
+import inventory from "../test-data/inventory-page.data.json" with { type: "json" };
+import { loginData } from "../test-data/login-page.data";
 
 const test = base.extend({
   loginFixture: async ({ page }, use) => {
@@ -19,7 +19,7 @@ const test = base.extend({
     await use();
 
     // TEARDOWN
-    console.log("closing loginUser fixture");
+    console.log("closing loginFixture");
   },
 });
 

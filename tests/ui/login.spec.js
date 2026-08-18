@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
-import users from "../../test-data/users-data";
+import users from "../../test-data/users.data";
 import LoginPage from "../../pages/login.page";
-import { loginData } from "../../test-data/login-page-data";
+import { loginData } from "../../test-data/login-page.data";
 
 /** @type {LoginPage} */
 let loginPage;
