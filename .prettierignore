@@ -4,3 +4,5 @@ test-results
 visual-baselines
 pnpm-lock.yaml
 docs/archive
+allure-results
+allure-report

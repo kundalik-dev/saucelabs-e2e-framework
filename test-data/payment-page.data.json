@@ -1,0 +1,8 @@
+{
+  "basicData": {
+    "title": "Checkout: Overview",
+    "pageUrl": "/checkout-step-two.html"
+  },
+  "paymentInfo": "SauceCard #31337",
+  "shippingInfo": "Free Pony Express Delivery!"
+}

@@ -2,6 +2,9 @@ import { test as base, expect } from "@playwright/test";
 import LoginPage from "../pages/login.page";
 import InventoryPage from "../pages/inventory.page";
 import CartPage from "../pages/cart.page";
+import CheckoutPage from "../pages/checkout.page";
+import PaymentPage from "../pages/payment.page";
+import CheckoutCompletePage from "../pages/checkout-complete.page";
 import { loginData } from "../test-data/login-page.data";
 import inventoryData from "../test-data/inventory-page.data.json" with { type: "json" };
 
@@ -45,6 +48,24 @@ const test = base.extend({
   cartPage: async ({ page }, use) => {
     const cartPage = new CartPage(page);
     await use(cartPage);
+  },
+
+  /* Checkout, payment, and checkout-complete are all click-through pages
+   * reached from the previous step (CartPage.checkout(), CheckoutPage's
+   * continueToOverview(), PaymentPage.finish()) — none of them goto(). */
+  checkoutPage: async ({ page }, use) => {
+    const checkoutPage = new CheckoutPage(page);
+    await use(checkoutPage);
+  },
+
+  paymentPage: async ({ page }, use) => {
+    const paymentPage = new PaymentPage(page);
+    await use(paymentPage);
+  },
+
+  checkoutCompletePage: async ({ page }, use) => {
+    const checkoutCompletePage = new CheckoutCompletePage(page);
+    await use(checkoutCompletePage);
   },
 });
 

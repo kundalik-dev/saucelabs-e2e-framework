@@ -65,17 +65,35 @@
 ## E2E test cases
 
 - should complete the full checkout process
-- should allow the user to cancel checkout
+- should navigate to the checkout overview page when clicking continue with valid information
+- should return to the cart page when clicking cancel on the checkout information page
 
 # 5. Payments page test cases
 
 ## UI test cases
 
-- should format the item total, tax, and grand total currencies correctly
-- should display shipping information and the payment card masking placeholder
+- should format the item total, tax, and grand total currencies correctly ✅
+- should display shipping information and the payment card masking placeholder ✅
+- should display the item quantities and descriptions matching the cart contents in the checkout overview ✅
+- should display the item total without floating-point rounding artifacts (e.g. 59.980000000000004) ✅
 
 ## E2E test cases
 
 - should match the grand total mathematical sum of items plus calculated tax
-- should display the 'Thank you for your order!' confirmation screen upon finishing
+- should return to the inventory page when clicking cancel on the checkout overview page
+
+# 6. Order complete page test cases
+
+## UI test cases
+
+- should display the 'Checkout: Complete!' page title ✅
+- should display the green checkmark confirmation icon ✅
+- should display the 'Thank you for your order!' heading ✅
+- should display the order dispatch confirmation message ✅
+- should display the 'Back Home' button ✅
+
+## E2E test cases
+
+- should reach the order complete page after finishing the checkout overview
 - should completely clear the shopping cart badge count after order completion
+- should navigate to the inventory page when clicking the 'Back Home' button

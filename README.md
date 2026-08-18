@@ -244,6 +244,7 @@ The current workflow:
 - [x] ESLint + Prettier
 - [x] HTML reporting
 - [x] GitHub Actions CI
+- [x] Allure reporting
 
 ### Planned
 
@@ -252,7 +253,6 @@ The current workflow:
 - [ ] Complete checkout E2E flow
 - [ ] Playwright `storageState` authentication
 - [ ] Visual regression testing
-- [ ] Allure reporting
 - [ ] Jenkins pipeline
 - [ ] SonarCloud integration
 

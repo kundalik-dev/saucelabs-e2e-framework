@@ -1,0 +1,16 @@
+{
+  "basicData": {
+    "title": "Checkout: Your Information",
+    "pageUrl": "/checkout-step-one.html"
+  },
+  "validCustomer": {
+    "firstName": "Kundalik",
+    "lastName": "Jadhav",
+    "postalCode": "411058"
+  },
+  "errorMessages": {
+    "missingFirstName": "Error: First Name is required",
+    "missingLastName": "Error: Last Name is required",
+    "missingPostalCode": "Error: Postal Code is required"
+  }
+}

@@ -12,6 +12,8 @@ export default [
       "test-results/**",
       "visual-baselines/**",
       "docs/archive/**",
+      "allure-results/**",
+      "allure-report/**",
     ],
   },
   js.configs.recommended,

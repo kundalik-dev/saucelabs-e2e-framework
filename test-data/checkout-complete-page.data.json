@@ -1,0 +1,9 @@
+{
+  "basicData": {
+    "title": "Checkout: Complete!",
+    "pageUrl": "/checkout-complete.html"
+  },
+  "confirmationHeader": "Thank you for your order!",
+  "confirmationText": "Your order has been dispatched, and will arrive just as fast as the pony can get there!",
+  "backHomeButtonText": "Back Home"
+}

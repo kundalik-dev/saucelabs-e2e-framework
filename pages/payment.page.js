@@ -1,4 +1,4 @@
-class CartPage {
+class PaymentPage {
   /** @param {import('@playwright/test').Page} page */
   constructor(page) {
     this.page = page;
@@ -6,20 +6,22 @@ class CartPage {
     // heading locator
     this.titleLoc = this.page.getByTestId("title");
 
-    // cart item locators
+    // cart item locators (same shape as CartPage — the overview reuses the item list markup)
     this.cartItemsLoc = this.page.locator(".cart_item");
     this.productNamesLoc = this.page.getByTestId("inventory-item-name");
     this.productPricesLoc = this.page.getByTestId("inventory-item-price");
     this.productDescriptionsLoc = this.page.getByTestId("inventory-item-desc");
-    this.productQuantitiesLoc = this.page.getByTestId("item-quantity");
+
+    // payment / shipping / total locators
+    this.paymentInfoLoc = this.page.getByTestId("payment-info-value");
+    this.shippingInfoLoc = this.page.getByTestId("shipping-info-value");
+    this.itemTotalLoc = this.page.getByTestId("subtotal-label");
+    this.taxLoc = this.page.getByTestId("tax-label");
+    this.totalLoc = this.page.getByTestId("total-label");
 
     // action locators
-    this.continueShoppingBtnLoc = this.page.getByTestId("continue-shopping");
-    this.checkoutBtnLoc = this.page.getByTestId("checkout");
-  }
-
-  async goto(pageUrl) {
-    await this.page.goto(pageUrl);
+    this.finishBtnLoc = this.page.getByTestId("finish");
+    this.cancelBtnLoc = this.page.getByTestId("cancel");
   }
 
   pageTitle() {
@@ -48,25 +50,33 @@ class CartPage {
       .getByTestId("item-quantity");
   }
 
-  async removeProductFromCart(productName) {
-    await this.cartItemsLoc
-      .filter({ hasText: productName })
-      .getByRole("button", { name: "Remove" })
-      .click();
+  paymentInformation() {
+    return this.paymentInfoLoc;
   }
 
-  continueShoppingButton() {
-    return this.continueShoppingBtnLoc;
+  shippingInformation() {
+    return this.shippingInfoLoc;
   }
 
-  checkoutButton() {
-    return this.checkoutBtnLoc;
+  itemTotal() {
+    return this.itemTotalLoc;
   }
 
-  // navigates to the checkout information page via the cart's checkout button
-  async checkout() {
-    await this.checkoutBtnLoc.click();
+  tax() {
+    return this.taxLoc;
+  }
+
+  total() {
+    return this.totalLoc;
+  }
+
+  async finish() {
+    await this.finishBtnLoc.click();
+  }
+
+  async cancel() {
+    await this.cancelBtnLoc.click();
   }
 }
 
-export default CartPage;
+export default PaymentPage;
