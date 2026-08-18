@@ -21,8 +21,9 @@ class InventoryPage {
     // sort locator
     this.sortDropdownLoc = this.page.getByTestId("product-sort-container");
 
-    // menu locator
-    this.menuBtnLoc = this.page.getByTestId("open-menu");
+    // menu locator (role-based: the data-test="open-menu" element is a
+    // decorative <img> that the wrapping button visually intercepts clicks for)
+    this.menuBtnLoc = this.page.getByRole("button", { name: "Open Menu" });
     this.logoutLinkLoc = this.page.getByTestId("logout-sidebar-link");
   }
 
