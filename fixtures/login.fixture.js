@@ -1,7 +1,7 @@
 import { test as base, expect } from "@playwright/test";
 import LoginPage from "../pages/login.page";
 import users from "../test-data/users.data";
-import inventory from "../test-data/inventory.data.json" with { type: "json" };
+import inventory from "../test-data/inventory-page.data.json" with { type: "json" };
 import { loginData } from "../test-data/login-page.data";
 
 const test = base.extend({

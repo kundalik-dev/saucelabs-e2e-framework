@@ -21,6 +21,10 @@ class InventoryPage {
     this.sortDropdownLoc = this.page.getByTestId("product-sort-container");
   }
 
+  async goto(pageUrl) {
+    await this.page.goto(pageUrl);
+  }
+
   pageTitle() {
     return this.titleLoc;
   }

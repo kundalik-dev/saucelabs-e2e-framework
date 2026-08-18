@@ -1,6 +1,6 @@
 import { test, expect } from "../../fixtures/login.fixture";
 import InventoryPage from "../../pages/inventory.page";
-import inventoryData from "../../test-data/inventory.data.json" with { type: "json" };
+import inventoryData from "../../test-data/inventory-page.data.json" with { type: "json" };
 import {
   priceSortCases,
   nameSortCases,
