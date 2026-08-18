@@ -1,0 +1,11 @@
+{
+  "basicData": {
+    "title": "Your Cart",
+    "pageUrl": "/cart.html"
+  },
+  "defaultQuantity": "1",
+  "buttons": {
+    "continueShopping": "Continue Shopping",
+    "checkout": "Checkout"
+  }
+}

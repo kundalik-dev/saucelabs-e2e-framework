@@ -16,6 +16,7 @@ class InventoryPage {
     // cart locator
     this.addToCartLoc = this.page.getByText("Add to cart");
     this.cartBadgeLoc = this.page.getByTestId("shopping-cart-badge");
+    this.cartLinkLoc = this.page.getByTestId("shopping-cart-link");
 
     // sort locator
     this.sortDropdownLoc = this.page.getByTestId("product-sort-container");
@@ -50,6 +51,11 @@ class InventoryPage {
 
   cartProductCount() {
     return this.cartBadgeLoc;
+  }
+
+  // navigates to the cart page via the header cart icon (click-through entry point)
+  async openCart() {
+    await this.cartLinkLoc.click();
   }
 
   async getAllProductDescriptions() {

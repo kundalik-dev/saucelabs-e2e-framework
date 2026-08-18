@@ -1,4 +1,4 @@
-import { test, expect } from "../../fixtures/inventory.fixture";
+import { test, expect } from "../../fixtures/auth.fixture";
 import inventoryData from "../../test-data/inventory-page.data.json" with { type: "json" };
 import {
   priceSortCases,
@@ -7,8 +7,6 @@ import {
 import { CommonUtils } from "../../utils/common.utils";
 
 test.describe("Inventory", () => {
-  test.use({ storageState: "./auth/storageState.json" });
-
   test("should display the correct product information", async ({
     inventoryPage,
   }) => {
@@ -73,9 +71,6 @@ test.describe("Inventory", () => {
     //arrange
     const sortOrder = nameSortCases[1].sortOrder;
     const compareLogic = nameSortCases[1].compare;
-    // console.log(
-    //   `Sorting products by: ${sortOrder} with compare logic: ${compareLogic}`
-    // );
 
     //act
     const productNames = await inventoryPage.getAllProductNames();

@@ -41,8 +41,10 @@
 
 ## UI test cases
 
-- Should display correct product names and prices for all items in the cart list
-- Should verify 'Sauce Labs Backpack' quantity is 1 in the cart
+- Should display correct product names and prices for all items in the cart list ✅
+- Should verify 'Sauce Labs Backpack' quantity is 1 in the cart ✅
+- Should display the cart page title as 'Your Cart' ✅
+- Should display 'Continue Shopping' and 'Checkout' buttons on the cart page ✅
 
 ## E2E test cases
 
