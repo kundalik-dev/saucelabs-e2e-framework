@@ -20,6 +20,7 @@
 
 ## UI test cases
 
+- should display the correct product information ✅
 - Should add a product and verify the badge count updates to 1
 - Should remove all products and ensure the badge is hidden
 - Should display matching images, titles, and prices for all inventory cards
@@ -29,10 +30,10 @@
 
 ## E2E test cases
 
-- Should sort products in descending alphabetical order (A to Z)
-- Should sort products in descending alphabetical order (Z to A)
-- Should sort products in ascending price order (low to high)
-- Should sort products in descending price order (high to low)
+- Should sort products in descending alphabetical order (A to Z) ✅
+- Should sort products in descending alphabetical order (Z to A) ✅
+- Should sort products in ascending price order (low to high) ✅
+- Should sort products in descending price order (high to low) ✅
 - Should open the detailed item view when clicking on a product title
 - Should retain added cart items after reloading the inventory page
 

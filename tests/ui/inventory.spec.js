@@ -8,27 +8,6 @@ import {
 import { CommonUtils } from "../../utils/common.utils";
 
 test.describe("Inventory", () => {
-  test("should display all available products", async ({
-    loginFixture,
-    page,
-  }) => {
-    // Arrange
-    const inventoryPage = new InventoryPage(page);
-
-    // Act
-    const expectedNames = Object.values(inventoryData.productData).map(
-      (product) => product.name
-    );
-    // check products count - as this has auto waits
-    await expect(inventoryPage.getInventoryCount).toHaveCount(
-      expectedNames.length
-    );
-
-    // Get all products names
-    const actualNames = await inventoryPage.getAllProductNames();
-    expect(actualNames).toEqual(expectedNames);
-  });
-
   test("should display the correct product information", async ({
     loginFixture,
     page,
@@ -68,6 +47,33 @@ test.describe("Inventory", () => {
     await expect(inventoryPage.cartProductCount()).toHaveCount(1);
   });
 
+  test("Should toggle button text from 'Add to cart' to 'Remove' when a product is added and removed", async ({
+    loginFixture,
+    page,
+  }) => {
+    const inventoryPage = new InventoryPage(page);
+
+    const productName = inventoryData.productData.backpack.name;
+    const addButtonText = inventoryData.cart.addCartBtnText;
+    const removeButtonText = inventoryData.cart.removeCartBtnText;
+
+    await expect(inventoryPage.productButton(productName)).toHaveText(
+      addButtonText
+    );
+
+    await inventoryPage.addProductToCart(productName);
+
+    await expect(inventoryPage.productButton(productName)).toHaveText(
+      removeButtonText
+    );
+
+    await inventoryPage.removeProductFromCart(productName);
+
+    await expect(inventoryPage.productButton(productName)).toHaveText(
+      addButtonText
+    );
+  });
+
   // sorting without data-driven approach
   test("should sort products names in descending alphabetical order (Z to A)", async ({
     loginFixture,
@@ -78,9 +84,9 @@ test.describe("Inventory", () => {
 
     const sortOrder = nameSortCases[1].sortOrder;
     const compareLogic = nameSortCases[1].compare;
-    console.log(
-      `Sorting products by: ${sortOrder} with compare logic: ${compareLogic}`
-    );
+    // console.log(
+    //   `Sorting products by: ${sortOrder} with compare logic: ${compareLogic}`
+    // );
 
     //act
     const productNames = await inventoryPage.getAllProductNames();

@@ -55,15 +55,21 @@ class InventoryPage {
   async addProductToCart(productName) {
     await this.inventoryItemsLoc
       .filter({ hasText: productName })
-      .locator("button")
+      .getByRole("button", { name: "Add to cart" })
       .click();
   }
 
   async removeProductFromCart(productName) {
     await this.inventoryItemsLoc
       .filter({ hasText: productName })
-      .locator("button")
+      .getByRole("button", { name: "Remove" })
       .click();
+  }
+
+  productButton(productName) {
+    return this.inventoryItemsLoc
+      .filter({ hasText: productName })
+      .getByRole("button");
   }
 
   async selectSortOrder(sortOrder) {
