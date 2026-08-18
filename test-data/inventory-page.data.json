@@ -38,5 +38,9 @@
   "sortOrder": {
     "name": { "a_z": "az", "z_a": "za" },
     "price": { "asc": "lohi", "desc": "hilo" }
+  },
+  "cart": {
+    "addCartBtnText": "Add to cart",
+    "removeCartBtnText": "Remove"
   }
 }

@@ -5,6 +5,8 @@
 ![pnpm](https://img.shields.io/badge/pnpm-11.18-F69220?logo=pnpm&logoColor=white)
 ![License](https://img.shields.io/badge/License-ISC-blue.svg)
 
+> **CI status**: no GitHub Actions workflow exists yet in this repo (no `.github/` directory) — the badge that used to live here pointed at a workflow that isn't set up. See [Roadmap](#roadmap).
+
 An end-to-end UI test automation framework for **[saucedemo.com](https://www.saucedemo.com/)**, built with [Playwright Test](https://playwright.dev/) in JavaScript. The framework follows the **Page Object Model (POM)** and is driven by external, decoupled test data (`JSON` / `JS`), keeping test logic, page interactions, and test data cleanly separated.
 
 ---
@@ -14,11 +16,15 @@ An end-to-end UI test automation framework for **[saucedemo.com](https://www.sau
 - [🎭 SauceDemo E2E Automation Framework](#-saucedemo-e2e-automation-framework)
   - [Table of Contents](#table-of-contents)
   - [Tech Stack](#tech-stack)
+  - [What I Built](#what-i-built)
   - [Project Structure](#project-structure)
   - [Prerequisites](#prerequisites)
   - [Getting Started](#getting-started)
   - [Running Tests](#running-tests)
-  - [Test Reports](#test-reports)
+    - [Run by test name](#run-by-test-name)
+    - [Run tagged tests](#run-tagged-tests)
+    - [Debug](#debug)
+    - [View HTML report](#view-html-report)
   - [Architecture](#architecture)
     - [Page Objects](#page-objects)
     - [Tests](#tests)
@@ -29,39 +35,56 @@ An end-to-end UI test automation framework for **[saucedemo.com](https://www.sau
   - [Coding Conventions](#coding-conventions)
   - [CI/CD](#cicd)
   - [Roadmap](#roadmap)
+  - [Contributing](#contributing)
   - [License](#license)
 
 ---
 
 ## Tech Stack
 
-| Category        | Tool                                                 |
-| --------------- | ---------------------------------------------------- |
-| Test Runner     | [Playwright Test](https://playwright.dev/docs/intro) |
-| Language        | JavaScript (ESM)                                     |
-| Design Pattern  | Page Object Model (POM)                              |
-| Test Data       | JSON / JS fixtures                                   |
-| Package Manager | [pnpm](https://pnpm.io/)                             |
-| Linting/Format  | ESLint (flat config) + Prettier                      |
-| Reporting       | Playwright HTML Reporter                             |
-| CI/CD           | GitHub Actions _(planned — not set up yet)_          |
-| Target App      | [saucedemo.com](https://www.saucedemo.com/)          |
+| Tool                     | Purpose                     |
+| ------------------------ | --------------------------- |
+| JavaScript (ESM)         | Programming language        |
+| Playwright Test          | E2E test automation         |
+| Page Object Model        | Test architecture           |
+| JSON / JS                | External test data          |
+| pnpm                     | Package management          |
+| ESLint + Prettier        | Code quality and formatting |
+| Playwright HTML Reporter | Test reporting              |
+| GitHub Actions           | CI                          |
 
----
+## What I Built
+
+- Page Object Model for Login and Inventory pages
+- UI and E2E test separation
+- Reusable Playwright login fixture
+- Externalized test data for users, products, and sorting
+- Data-driven inventory sorting tests
+- Reusable utility functions for test data transformation
+- Playwright HTML reports with trace support
+- ESLint and Prettier configuration
+- GitHub Actions pipeline for linting and automated tests
+- Chromium-based test execution
+- Environment-based configuration for `BASE_URL`, `HEADLESS`, `RETRIES`, and `WORKERS`
 
 ## Project Structure
 
-```
-04-saucelabs-e2e-framework/
-├── docs/
-│   ├── frameworks/                # Target architecture (01-07) + implementation logs (08-11)
-│   └── test-cases/                # Manual/automation test case documentation
-├── fixtures/
-│   └── login.fixture.js           # `loginUser` fixture — logs in as standard_user, still drives a real UI login
-├── pages/                         # Page Object Model classes
+```text
+├── pages/                  # Page Objects
 │   ├── login.page.js
 │   └── inventory.page.js
-├── test-data/                      # Test data (JSON / JS)
+│
+├── tests/
+│   ├── ui/                 # Single-page UI tests
+│   │   └── login.spec.js
+│   └── e2e/                # Multi-page/user-flow tests
+│       ├── inventory.spec.js
+│       └── checkout.spec.js
+│
+├── fixtures/               # Reusable Playwright fixtures
+│   └── login.fixture.js
+│
+├── test-data/              # External test data
 │   ├── users-data.js
 │   ├── inventory-data.json
 │   └── inventory-sort-data.js
@@ -82,6 +105,8 @@ An end-to-end UI test automation framework for **[saucedemo.com](https://www.sau
 └── CLAUDE.md / AGENTS.md / copilot-instructions.md   # AI-assistant & contributor guidelines
 ```
 
+Not yet present, despite being referenced elsewhere as target architecture: `.github/workflows/` (no CI configured at all), `visual-baselines/` (no visual regression tests written yet), `tests/api/`, `pages/cart.page.js`, `pages/checkout.page.js`, `pages/payment.page.js`. See [Roadmap](#roadmap).
+
 ---
 
 ## Prerequisites
@@ -94,56 +119,43 @@ An end-to-end UI test automation framework for **[saucedemo.com](https://www.sau
 ## Getting Started
 
 ```bash
-# 1. Clone the repository
-git clone <repo-url>
-cd e2e-saucedemo-playwright-framework
-
-# 2. Install dependencies
 pnpm install
-
-# 3. Install Playwright browsers
-pnpm exec playwright install --with-deps
+pnpm exec playwright install --with-deps chromium
 ```
 
 ---
 
 ## Running Tests
 
-```bash
-# Run the full suite
+> There's no `pnpm run test` script in `package.json` yet — run Playwright directly via `pnpm exec playwright test` (or add the alias yourself).
+
+````bash
+# Run the full suite (chromium only — other browsers are commented out in playwright.config.js)
 pnpm exec playwright test
-pnpm run test
 
-# Run a single spec file
+```bash
 pnpm exec playwright test tests/ui/login.spec.js
+````
 
-# Run a single test by name
-pnpm exec playwright test -g "should login with valid credential"
+### Run by test name
 
-# Run tests by tag
-pnpm exec playwright test --grep @smoke
-
-# List tests without running them
-pnpm exec playwright test --list
-
-# Run in headed / debug mode
-pnpm exec playwright test --debug
-
-# Open the last HTML report
-pnpm run report
-
-# Lint / format (no CI exists yet to gate on these — run manually before committing)
-pnpm run lint
-pnpm run lint:fix
-pnpm run format:check
-pnpm run format
+```bash
+pnpm exec playwright test -g "should login with valid credentials"
 ```
 
----
+### Run tagged tests
 
-## Test Reports
+```bash
+pnpm exec playwright test --grep @smoke
+```
 
-Playwright generates an HTML report after every run:
+### Debug
+
+```bash
+pnpm exec playwright test --debug
+```
+
+### View HTML report
 
 ```bash
 pnpm run report
@@ -178,6 +190,7 @@ Located in [`tests/`](tests), split by scope:
 | ----------- | ------------------------------------------------------ | ----------------------------------------------- |
 | `tests/ui`  | Validates a **single page** in isolation               | `login.spec.js`                                 |
 | `tests/e2e` | Spans **multiple page objects** or a full user journey | `inventory.spec.js`, `checkout.spec.js` (empty) |
+| `tests/api` | API-level tests                                        | doesn't exist yet                               |
 
 Spec filenames are just `<feature>.spec.js` — the `tests/ui`/`tests/e2e` folder itself encodes UI-vs-E2E, not a `.ui.`/`.e2e.` suffix in the filename. Each spec instantiates the relevant page object(s) (directly, or via the `loginUser` fixture) and asserts with `expect` / `expect.soft`.
 
@@ -232,16 +245,19 @@ Full contributor/AI-agent guidelines live in [`CLAUDE.md`](CLAUDE.md) / [`AGENTS
 
 ## CI/CD
 
-**Not set up yet.** GitHub Actions workflow currently runs on push — lint and tests are run manually (see [Running Tests](#running-tests)).
+**Not set up yet.** There is no `.github/` directory in this repo, so no GitHub Actions workflow currently runs on push or PR — lint and tests are run manually (see [Running Tests](#running-tests)).
+
+`docs/frameworks/09-11` describe a target/planned setup (a `lint` → `test` two-job pipeline, action versions pinned to their current majors, plus a manually-triggered `update-visual-baselines.yml` workflow) — treat those as design notes for CI to be built, not a description of what's running today. A Jenkins pipeline is also planned (see [Roadmap](#roadmap)).
 
 ---
 
 ## Roadmap
 
-- [x] Set up GitHub Actions CI from scratch — no `.github/workflows/` exists yet (a `lint` → `test` pipeline is designed in `docs/frameworks/09-11` but never implemented)
-- [x] Add a `pnpm run test` script to `package.json` — currently there's no alias, use `pnpm exec playwright test` directly
+- [ ] Set up GitHub Actions CI from scratch — no `.github/workflows/` exists yet (a `lint` → `test` pipeline is designed in `docs/frameworks/09-11` but never implemented)
+- [ ] Add a `pnpm run test` script to `package.json` — currently there's no alias, use `pnpm exec playwright test` directly
 - [ ] `global-setup.js` to log in once and persist an authenticated `storageState.json`, so tests that don't test login itself can skip the UI login step
 - [ ] Complete `cart.page.js`, `checkout.page.js`, `payment.page.js` and their corresponding `tests/e2e` specs (`checkout.spec.js` exists but is empty)
+- [ ] `tests/api` coverage — directory doesn't exist yet
 - [ ] Visual regression testing — no `snapshotDir` configured, no `toHaveScreenshot()` calls, no `visual-baselines/` directory yet
 - [ ] Fix pre-existing `no-unused-vars` lint errors in `tests/e2e/inventory.spec.js` (unused `page`/`loginUser` fixture args) — `pnpm run lint` currently fails
 - [ ] CSV-driven data-source support
@@ -253,6 +269,15 @@ Full contributor/AI-agent guidelines live in [`CLAUDE.md`](CLAUDE.md) / [`AGENTS
 
 ---
 
+## Contributing
+
+1. Only `main` exists as a branch today (no `qabranch` yet, despite being referenced in some docs as a planned flow) — branch off `main` for new work.
+2. Follow the [naming](#test-case-naming-convention) and [coding](#coding-conventions) conventions above.
+3. Run `pnpm run lint` and `pnpm run format:check` (or `lint:fix`/`format` to auto-fix) manually — there's no CI to gate on these yet.
+4. Ensure `pnpm exec playwright test` passes locally before opening a PR.
+
+---
+
 ## License
 
-[ISC](package.json)
+ISC

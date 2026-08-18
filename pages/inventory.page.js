@@ -21,6 +21,10 @@ class InventoryPage {
     this.sortDropdownLoc = this.page.getByTestId("product-sort-container");
   }
 
+  async goto(pageUrl) {
+    await this.page.goto(pageUrl);
+  }
+
   pageTitle() {
     return this.titleLoc;
   }
@@ -55,15 +59,21 @@ class InventoryPage {
   async addProductToCart(productName) {
     await this.inventoryItemsLoc
       .filter({ hasText: productName })
-      .locator("button")
+      .getByRole("button", { name: "Add to cart" })
       .click();
   }
 
   async removeProductFromCart(productName) {
     await this.inventoryItemsLoc
       .filter({ hasText: productName })
-      .locator("button")
+      .getByRole("button", { name: "Remove" })
       .click();
+  }
+
+  productButton(productName) {
+    return this.inventoryItemsLoc
+      .filter({ hasText: productName })
+      .getByRole("button");
   }
 
   async selectSortOrder(sortOrder) {
