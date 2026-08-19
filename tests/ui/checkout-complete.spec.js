@@ -8,6 +8,8 @@ test.describe("Checkout complete page", () => {
    * the full checkout journey, and finish. checkoutCompletePage does not
    * goto() directly since it's a click-through page reached via
    * PaymentPage.finish() (see fixtures/pages.fixture.js). */
+
+  // 🔴 check this step usiability
   test.beforeEach(
     async ({ inventoryPage, cartPage, checkoutPage, paymentPage }) => {
       const productName = inventoryData.productData.backpack.name;
@@ -56,5 +58,15 @@ test.describe("Checkout complete page", () => {
     await expect(checkoutCompletePage.backHomeButton()).toHaveText(
       checkoutCompleteData.backHomeButtonText
     );
+  });
+
+  test("should display cart badge with 0 items after clicking 'Back Home' button", async ({
+    checkoutCompletePage,
+    inventoryPage,
+  }) => {
+    // await checkoutCompletePage.backHomeButton().click();
+    // await expect(inventoryPage.cartBadge()).toHaveText(
+    //   checkoutCompleteData.cartBadgeAfterBackHome
+    // );
   });
 });
