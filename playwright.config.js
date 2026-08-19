@@ -2,10 +2,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
 /**
- * Read environment variables from file.
- * Uses Node's built-in env file loader (Node 20.6+/22 stable) instead of the
- * `dotenv` package, since this project targets Node 22.x and doesn't need
- * the extra dependency.
+ * Read environment variables from file without using dotenv package, since Playwright already has built-in support for loading .env files.
  */
 try {
   process.loadEnvFile(".env");
@@ -19,7 +16,7 @@ try {
 export default defineConfig({
   testDir: "./tests",
   /* Run tests in files in parallel */
-  fullyParallel: true,
+  fullyParallel: process.env.PARALLEL === "true",
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry count: RETRIES from .env overrides the CI-only default. */

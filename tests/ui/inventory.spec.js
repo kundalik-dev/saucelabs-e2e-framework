@@ -30,13 +30,8 @@ test.describe("Inventory", () => {
   });
 
   test("should add single product to the cart", async ({ inventoryPage }) => {
-    //arrange
     const productName = inventoryData.productData.backpack.name;
-
-    //act
     await inventoryPage.addProductToCart(productName);
-
-    //assert :- hard coded count as we are adding only one product to the cart
     await expect(inventoryPage.cartProductCount()).toHaveCount(1);
   });
 
@@ -51,14 +46,14 @@ test.describe("Inventory", () => {
       addButtonText
     );
 
+    // Add the product to the cart and verify the button text changes to "Remove"
     await inventoryPage.addProductToCart(productName);
-
     await expect(inventoryPage.productButton(productName)).toHaveText(
       removeButtonText
     );
 
+    // Remove the product from the cart and verify the button text changes back to "Add to cart"
     await inventoryPage.removeProductFromCart(productName);
-
     await expect(inventoryPage.productButton(productName)).toHaveText(
       addButtonText
     );
@@ -68,11 +63,9 @@ test.describe("Inventory", () => {
   test("should sort products names in descending alphabetical order (Z to A)", async ({
     inventoryPage,
   }) => {
-    //arrange
     const sortOrder = nameSortCases[1].sortOrder;
     const compareLogic = nameSortCases[1].compare;
 
-    //act
     const productNames = await inventoryPage.getAllProductNames();
     const expectedNames = [...productNames].sort(compareLogic);
 
@@ -83,8 +76,6 @@ test.describe("Inventory", () => {
     );
 
     const actualNames = await inventoryPage.getAllProductNames();
-
-    //assert
     expect(actualNames).toEqual(expectedNames);
   });
 

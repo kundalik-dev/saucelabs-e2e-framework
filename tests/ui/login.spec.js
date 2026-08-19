@@ -2,9 +2,9 @@ import { test, expect } from "../../fixtures/pages.fixture";
 import users from "../../test-data/users.data";
 import { loginData } from "../../test-data/login-page.data";
 
-/* Imports pages.fixture (not auth.fixture) on purpose: these tests exercise the
- * login form itself and must start from an anonymous session. The `loginPage`
- * fixture handles construction + the initial goto(). */
+/* Imports pages.fixture (not auth.fixture) on purpose. As the `loginPage`
+ * fixture handles construction + the initial goto(). And for login specs, we want to test the login page itself, not a post-login page.
+ */
 test.describe("Auth @login", () => {
   test("should login with valid credential", async ({ loginPage, page }) => {
     // Arrange
